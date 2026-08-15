@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; frame-src https:;" />
+    <title>MineWork · 冰川仪表舱</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!--
+    MineWork 3.0 direction contract (seed 79f4b4c4, direction 3 of 7, fused with signals-instruments-split-flap-concourse)
+    THESIS: MineWork is a personal status board, not a paper planner. It refuses the incumbent warm-paper + black-ink look for a matte instrument world: a split-flap board where every value (time, tasks, weather, system) is a live flap cell and the amber lamp marks what is active.
+    OWN-WORLD: glacier mist blue ground (image_colors.js: #98BEE6 base, #D7E8FB highlight, #6A90B9 shadow) with gradient surfaces, pearl ice flap faces, steel blue accent, hairline board rules, Bahnschrift numerals, 16px instrument radii, pill controls. Owner palette pinned by user brief.
+    STORY: the owner glances and reads the day like a board: greeting, split-flap clock, ruled stat cells, live panels; the island is the board's floating lamp.
+    FIRST VIEWPORT: dark shell, sidebar index rail, greeting + flip clock, four ruled stat cells, focus and pulse instrument faces, countdown and now-playing strip.
+    FORM: direction 3 of my grounded list; seed key 79f4b4c4.
+    FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+    -->
+    <div class="app-shell">
+      <div class="glacier-aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="ice-grid" aria-hidden="true"></div>
+
+      <header class="titlebar">
+        <div class="brand">
+          <img class="brand-wordmark" src="./brand-wordmark.svg" alt="MineWork" />
+        </div>
+        <div class="titlebar-center daily-title" id="dailyTitleQuote">慢慢来，你正在成为更好的自己。</div>
+        <div class="window-actions">
+          <button type="button" data-window="minimize" aria-label="最小化" title="最小化"><svg><use href="./icon-sprite.svg#minus"/></svg></button>
+          <button type="button" data-window="maximize" aria-label="最大化" title="最大化或还原"><svg><use href="./icon-sprite.svg#square"/></svg></button>
+          <button type="button" data-window="hide" aria-label="隐藏" title="隐藏到后台"><svg><use href="./icon-sprite.svg#caret-down"/></svg></button>
+          <button type="button" class="close" data-window="close" aria-label="关闭到后台" title="关闭到后台"><svg><use href="./icon-sprite.svg#x"/></svg></button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="sidebar">
+          <div class="nav-stack">
+            <button class="nav-item active" data-page="home" data-title="工作台">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#house"/></svg></span><span>工作台</span>
+            </button>
+            <button class="nav-item" data-page="tasks" data-title="今日待办">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#check-square"/></svg></span><span>今日待办</span>
+            </button>
+            <button class="nav-item" data-page="calendar" data-title="日历">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#calendar"/></svg></span><span>日历</span>
+            </button>
+            <button class="nav-item" data-page="weather" data-title="每日天气">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#cloud-sun"/></svg></span><span>每日天气</span>
+            </button>
+            <button class="nav-item" data-page="news" data-title="每日资讯">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#newspaper"/></svg></span><span>每日资讯</span>
+            </button>
+            <button class="nav-item" data-page="favorites" data-title="收藏夹">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#bookmark"/></svg></span><span>收藏夹</span>
+            </button>
+            <button class="nav-item" data-page="notes" data-title="内容摘录">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#quotes"/></svg></span><span>内容摘录</span>
+            </button>
+            <button class="nav-item" data-page="library" data-title="我的书架">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#books"/></svg></span><span>我的书架</span>
+            </button>
+            <button class="nav-item" data-page="hydration" data-title="喝水时间">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#drop"/></svg></span><span>喝水时间</span>
+            </button>
+            <button class="nav-item" data-page="reflection" data-title="今日复盘">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#arrows-clockwise"/></svg></span><span>今日复盘</span>
+            </button>
+            <div class="nav-divider"><span>工具</span></div>
+            <button class="nav-item" data-page="island" data-title="灵动岛">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#app-window"/></svg></span><span>灵动岛</span>
+            </button>
+            <button class="nav-item" data-page="ai" data-title="AI 对话">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#sparkle"/></svg></span><span>AI 对话</span>
+            </button>
+            <button class="nav-item" data-page="shortcuts" data-title="快捷打开">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#rocket-launch"/></svg></span><span>快捷打开</span>
+            </button>
+            <button class="nav-item" data-page="countdown" data-title="倒计时">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#timer"/></svg></span><span>倒计时</span>
+            </button>
+            <button class="nav-item" data-page="translate" data-title="翻译">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#translate"/></svg></span><span>翻译</span>
+            </button>
+            <button class="nav-item" data-page="performance" data-title="设备性能">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#gauge"/></svg></span><span>设备性能</span>
+            </button>
+            <button class="nav-item" data-page="music" data-title="音乐监控">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#music-notes"/></svg></span><span>音乐监控</span>
+            </button>
+            <button class="nav-item" data-page="mail" data-title="邮箱">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#envelope"/></svg></span><span>邮箱</span>
+            </button>
+            <button class="nav-item" data-page="notifications" data-title="閫氱煡">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#bell"/></svg></span><span>閫氱煡</span>
+            </button>
+          </div>
+          <button class="sidebar-status account-entry" id="accountEntry">
+            <span class="account-avatar" id="accountAvatar">Y</span>
+            <div><strong id="accountName">账户登录</strong><small id="accountHint">输入用户名即可登录</small></div>
+            <span class="account-arrow"><svg><use href="./icon-sprite.svg#caret-right"/></svg></span>
+          </button>
+        </aside>
+
+        <main class="content">
+          <section class="page active" id="page-home">
+            <article class="daily-note">
+              <blockquote id="dailyQuote">慢慢来，你正在成为更好的自己。</blockquote>
+              <small id="dailyQuoteIndex">01 / 60</small>
+              <div class="quote-actions">
+                <button type="button" id="quotePrev" title="上一条" aria-label="上一条"><svg><use href="./icon-sprite.svg#caret-left"/></svg></button>
+                <button type="button" id="quoteShuffle" title="随机换一句" aria-label="随机换一句"><svg><use href="./icon-sprite.svg#shuffle"/></svg></button>
+                <button type="button" id="quoteNext" title="下一条" aria-label="下一条"><svg><use href="./icon-sprite.svg#caret-right"/></svg></button>
+              </div>
+            </article>
+            <div class="hero">
+              <div>
+                <h1><span id="greeting">晚上好</span>，<span id="greetingName">朋友</span>。</h1>
+                <p class="hero-copy">今天的一切，从这里开始。保持专注，稳步向前。</p>
+              </div>
+              <div class="hero-time">
+                <span class="phase-chip"><i></i><span id="dayPhase">EVENING</span></span>
+                <div class="flip-clock"><b id="clock">00:00</b><span class="flip-sec" id="clockSeconds">00</span></div>
+                <span id="date">2026年7月28日 星期二</span>
+              </div>
+            </div>
+
+            <div class="personal-overview">
+              <article class="overview-stat" data-go="tasks"><span>今日待办</span><strong id="homeTaskStat">0 / 0</strong><i><em id="homeTaskBar"></em></i><small>TODAY</small></article>
+              <article class="overview-stat" data-go="hydration"><span>今日饮水</span><strong><b id="homeHydration">0</b> ml</strong><i><em id="homeHydrationBar"></em></i><small>HYDRATION</small></article>
+              <article class="overview-stat" data-go="library"><span>正在阅读</span><strong><b id="homeBookCount">0</b> 本</strong><i><em id="homeBookBar"></em></i><small>READING</small></article>
+              <article class="overview-stat" data-go="shortcuts"><span>快捷项目</span><strong><b id="homeShortcutCount">0</b> 个</strong><i><em id="homeShortcutBar"></em></i><small>QUICK OPEN</small></article>
+            </div>
+            <div class="home-focus-grid">
+              <article class="panel focus-card">
+                <div class="panel-heading"><h2>今日焦点</h2><button class="text-link" data-go="tasks">管理全部</button></div>
+                <div id="homeTaskList" class="home-task-list"></div>
+              </article>
+              <article class="panel pulse-card">
+                <div class="panel-heading"><h2>工作状态</h2><span class="live-pill"><i></i>实时</span></div>
+                <div class="home-meters">
+                  <div class="meter-card"><div class="ring" id="homeCpuRing"><span id="homeCpu">0%</span></div><small>CPU</small></div>
+                  <div class="meter-card"><div class="ring purple" id="homeMemRing"><span id="homeMem">0%</span></div><small>内存</small></div>
+                  <div class="meter-card"><div class="ring cyan" id="homeDiskRing"><span id="homeDisk">0%</span></div><small>磁盘</small></div>
+                </div>
+                <div class="mini-shortcuts" id="homeShortcuts"></div>
+              </article>
+            </div>
+            <div class="quiet-strip">
+              <div><div id="homeCountdown"></div></div>
+              <div class="now-playing" data-go="music"><div class="album-art" id="homeAlbum"><span><svg><use href="./icon-sprite.svg#music-notes"/></svg></span></div><div><h2 id="homeTrack">等待音乐播放</h2><p id="homeArtist">Windows 媒体会话</p></div><button class="round-play" data-media="play-toggle" aria-label="播放或暂停"><svg><use href="./icon-sprite.svg#play"/></svg></button></div>
+            </div>
+          </section>
+
+          <section class="page" id="page-tasks">
+            <div class="page-head"><div><h1>今日待办</h1><p>管理你的一天，从记录每一件小事开始。</p></div><span class="page-counter" id="taskCounter">0 / 0</span></div>
+            <form class="capture-form" id="taskForm"><input id="taskInput" maxlength="90" placeholder="新建待办（按 Enter 添加）" required /><select id="taskPriority"><option value="high">HIGH</option><option value="normal" selected>NORMAL</option><option value="low">LOW</option></select><button class="primary-button">添加</button></form>
+            <div class="list-toolbar"><span>CURRENT STACK</span><button class="text-link" id="clearCompletedTasks">清理已完成</button></div>
+            <div class="paper-list" id="taskList"></div>
+          </section>
+
+          <section class="page" id="page-calendar">
+            <div class="page-head"><div><h1 id="calendarTitle">Calendar</h1><p>公历、农历、节气、节假日与纪念日，在本地稳定汇合。</p></div><div class="head-actions"><button class="circle-button" id="calendarPrev" aria-label="上个月"><svg><use href="./icon-sprite.svg#arrow-left"/></svg></button><button class="circle-button" id="calendarNext" aria-label="下个月"><svg><use href="./icon-sprite.svg#arrow-right"/></svg></button><button class="secondary-button" id="calendarToday">回到今天</button></div></div>
+            <div class="calendar-filters" aria-label="日历信号筛选"><label><input type="checkbox" data-calendar-filter="events" checked />行程</label><label><input type="checkbox" data-calendar-filter="tasks" checked />待办</label><label><input type="checkbox" data-calendar-filter="officialHolidays" checked />法定休班</label><label><input type="checkbox" data-calendar-filter="traditionalFestivals" checked />中国节日</label><label><input type="checkbox" data-calendar-filter="internationalDates" checked />国际纪念日</label><label><input type="checkbox" data-calendar-filter="anniversaries" checked />个人纪念日</label></div>
+            <div class="calendar-workspace">
+              <article class="panel calendar-panel"><div class="calendar-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div><div class="calendar-grid" id="calendarGrid"></div></article>
+              <aside class="calendar-agenda-rail">
+                <article class="panel selected-day">
+                  <div class="selected-day-heading"><div><span class="agenda-kicker">DAY FLOW</span><h2 id="selectedDate">今天</h2><p id="selectedDateMeta">待办与行程统一查看</p></div><button class="primary-button compact-button" id="focusEventComposer"><svg><use href="./icon-sprite.svg#plus"/></svg>新建行程</button></div>
+                  <div class="day-agenda"><section><h3>待办</h3><div id="selectedDayTasks" class="selected-task-list"></div></section><section><h3>行程</h3><div id="selectedDayEvents" class="selected-event-list"></div></section><section><h3>节日与节气</h3><div id="selectedDayFestivals" class="selected-event-list"></div></section><section><h3>纪念日</h3><div id="selectedDayAnniversaries" class="selected-event-list"></div></section></div>
+                </article>
+                <form class="event-composer panel" id="eventForm">
+                  <div class="event-composer-title"><span><svg><use href="./icon-sprite.svg#calendar"/></svg></span><div><strong>添加行程</strong><small>选中日期后直接安排时间</small></div></div>
+                  <input id="eventTitle" maxlength="80" placeholder="行程名称" required />
+                  <div class="event-time-row"><input id="eventDate" type="date" aria-label="日期" /><input id="eventTime" type="time" required /></div>
+                  <select id="eventReminder"><option value="0">准时提醒</option><option value="10">提前 10 分钟</option><option value="30" selected>提前 30 分钟</option><option value="60">提前 1 小时</option><option value="1440">提前 1 天</option></select>
+                  <div class="event-actions"><button type="button" class="secondary-button" id="eventToday">定位今天</button><button class="primary-button">添加到行程</button></div>
+                </form>
+                <form class="event-composer panel anniversary-composer" id="anniversaryForm">
+                  <div class="event-composer-title"><span><svg><use href="./icon-sprite.svg#calendar"/></svg></span><div><strong>添加纪念日</strong><small>生日、周年或自定义日期</small></div></div>
+                  <input type="hidden" id="anniversaryEditId" /><input id="anniversaryTitle" maxlength="80" placeholder="纪念日名称" required />
+                  <div class="anniversary-grid"><select id="anniversaryType"><option value="birthday">生日</option><option value="anniversary">周年</option><option value="custom">自定义</option></select><select id="anniversaryCalendar"><option value="solar">公历</option><option value="lunar">农历</option></select><select id="anniversaryRecurrence"><option value="once">仅一次</option><option value="monthly">每月</option><option value="yearly" selected>每年</option></select><input id="anniversaryDate" type="date" required /></div>
+                  <div class="anniversary-options"><label id="anniversaryLeapWrap" hidden><input id="anniversaryLeap" type="checkbox" />闰月</label><label><input id="anniversaryAllDay" type="checkbox" checked />全天</label><input id="anniversaryTime" type="time" value="09:00" disabled /><fieldset><legend>提醒</legend><label><input type="checkbox" name="anniversaryReminder" value="0" checked />当天</label><label><input type="checkbox" name="anniversaryReminder" value="1" />提前 1 天</label><label><input type="checkbox" name="anniversaryReminder" value="3" />提前 3 天</label><label><input type="checkbox" name="anniversaryReminder" value="7" />提前 7 天</label></fieldset><label><input id="anniversaryEnabled" type="checkbox" checked />启用</label></div>
+                  <div class="event-actions"><button type="reset" class="secondary-button">清空</button><button class="primary-button">保存纪念日</button></div>
+                  <div id="anniversaryList" class="anniversary-list"></div>
+                </form>
+              </aside>
+            </div>
+          </section>
+
+          <section class="page" id="page-weather">
+            <div class="page-head weather-page-head">
+              <div><h1>每日天气</h1><p>按国家、省份、城市、区县逐级选择，获取当前实况与未来四日预报。</p></div>
+              <div class="weather-refresh-actions"><button class="secondary-button" id="refreshWeather">刷新当前</button><button class="secondary-button" id="refreshWeatherAll">刷新全部</button></div>
+            </div>
+            <article class="panel location-panel">
+              <div class="location-step-title"><strong>选择天气位置</strong><small id="locationPath">中国 · 请选择省份</small></div>
+              <form class="location-form" id="locationForm">
+                <label><span>01 · 国家 / 地区</span><select id="weatherCountry"></select><input class="foreign-location hidden" id="foreignCountry" maxlength="40" placeholder="输入国家或地区" /></label>
+                <label><span>02 · 省份 / 州</span><select id="weatherProvince"></select><input class="foreign-location hidden" id="foreignProvince" maxlength="40" placeholder="输入省份或州" /></label>
+                <label><span>03 · 城市</span><select id="weatherCity"></select><input class="foreign-location hidden" id="foreignCity" maxlength="40" placeholder="输入城市" /></label>
+                <label><span>04 · 区 / 县</span><select id="weatherDistrict"></select><input class="foreign-location hidden" id="foreignDistrict" maxlength="40" placeholder="输入区或县（可选）" /></label>
+                <button class="primary-button location-submit">获取实时天气</button>
+              </form>
+            </article>
+            <div class="weather-location-tabs" id="weatherLocationTabs" role="tablist" aria-label="已保存的天气位置"></div>
+            <article class="panel weather-detail-panel">
+              <div class="panel-heading"><h2>天气概览</h2><span class="weather-updated" id="weatherUpdated">等待选择位置</span></div>
+              <div id="weatherContent" class="weather-content weather-content-large"><div class="network-empty">完成四级位置筛选后，天气将显示在这里。</div></div>
+            </article>
+          </section>
+
+          <section class="page" id="page-news">
+            <div class="page-head">
+              <div><h1>每日资讯</h1><p>实时汇集当天热点新闻与重要时事，点击标题可打开原文。</p></div>
+              <div class="news-actions"><input id="newsSearch" type="search" aria-label="搜索当前资讯" placeholder="搜索标题或来源" /><button class="secondary-button" id="refreshNewsAll">刷新全部</button><button class="secondary-button" id="refreshNews">刷新当前</button></div>
+            </div>
+            <article class="panel news-page-panel">
+              <div class="news-category-tabs" role="tablist" aria-label="资讯分类">
+                <button role="tab" aria-selected="true" data-news-category="general">综合</button>
+                <button role="tab" aria-selected="false" data-news-category="china-politics">中国时政</button>
+                <button role="tab" aria-selected="false" data-news-category="international">国际</button>
+                <button role="tab" aria-selected="false" data-news-category="finance">财经</button>
+                <button role="tab" aria-selected="false" data-news-category="technology">科技</button>
+                <button role="tab" aria-selected="false" data-news-category="ai">AI</button>
+                <button role="tab" aria-selected="false" data-news-category="society">社会</button>
+                <button role="tab" aria-selected="false" data-news-category="culture-sports">文体</button>
+              </div>
+              <div class="news-page-intro"><span class="live-pill"><i></i>实时更新</span><div><strong>今日热点</strong><small id="newsUpdated">正在连接资讯源…</small></div></div>
+              <div id="newsList" class="news-list news-list-large"><div class="network-empty">正在获取今日热点…</div></div>
+            </article>
+          </section>
+
+          <section class="page" id="page-favorites">
+            <div class="page-head"><div><h1>我的收藏夹</h1><p>把值得回来的链接，放在一个安静的地方。</p></div></div>
+            <form class="capture-form" id="favoriteForm"><input id="favoriteUrl" type="url" placeholder="粘贴链接：文章 / 推文 / 视频 / 任何想法" required /><input id="favoriteTitle" maxlength="70" placeholder="标题（可选）" /><button class="primary-button">收藏</button></form>
+            <div class="archive-list" id="favoriteList"></div>
+          </section>
+
+          <section class="page" id="page-notes">
+            <div class="page-head"><div><h1>内容摘录</h1><p>捕捉片段、灵感和以后值得继续思考的句子。</p></div></div>
+            <form class="note-composer panel" id="noteForm"><input id="noteTitle" maxlength="60" placeholder="摘录标题" required /><textarea id="noteContent" maxlength="800" placeholder="写下内容，或直接在这里粘贴图片…"></textarea><div class="note-media-dock" id="noteMediaDock"><span class="note-paste-hint"><svg><use href="./icon-sprite.svg#copy"/></svg><b>支持粘贴图片</b><small>最多 3 张，自动压缩并仅保存在本机</small></span><div class="note-image-preview" id="noteImagePreview"></div></div><div class="note-composer-actions"><input id="noteTag" maxlength="20" placeholder="标签，例如：灵感" /><button class="primary-button">保存摘录</button></div></form>
+            <div class="note-grid" id="noteGrid"></div>
+          </section>
+
+          <section class="page" id="page-library">
+            <div class="page-head"><div><h1>我的书架</h1><p>记录正在读、想读与已经读完的书，也可以直接导入本地文件。</p></div><button class="secondary-button" id="importBooks">导入本地书籍</button></div>
+            <form class="capture-form" id="bookForm"><input id="bookTitle" maxlength="60" placeholder="书名" required /><input id="bookAuthor" maxlength="40" placeholder="作者" /><select id="bookStatus"><option value="reading">正在阅读</option><option value="wishlist">想读</option><option value="finished">已读完</option></select><button class="primary-button">加入书架</button></form>
+            <div class="bookshelf" id="bookGrid"></div>
+          </section>
+
+          <section class="page" id="page-hydration">
+            <div class="page-head centered"><div><h1>喝水时间</h1><p>按自己的节奏补水，目标、记录与提醒都保存在本机。</p></div></div>
+            <article class="hydration-stage panel"><div class="water-ring" id="waterRing" role="meter" aria-label="今日饮水进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="water-liquid" aria-hidden="true"><svg class="water-wave water-wave-back" viewBox="0 0 240 32" preserveAspectRatio="none"><path d="M0 18 C40 2 80 30 120 14 S200 2 240 18 V32 H0Z"/></svg><svg class="water-wave water-wave-front" viewBox="0 0 240 32" preserveAspectRatio="none"><path d="M0 14 C34 30 82 2 122 18 S202 30 240 12 V32 H0Z"/></svg><span class="water-bubbles"><i></i><i></i><i></i></span></div><span class="goal-ripple" aria-hidden="true"></span><div class="water-reading"><span>当前摄入量</span><strong id="waterAmount">0</strong><b>ml</b><small id="waterPercent">0% COMPLETED</small></div></div><div class="water-meta"><span>目标摄入<strong id="waterGoal">2000 ml</strong></span><span>还需饮水<strong id="waterRemaining">2000 ml</strong></span></div></article>
+            <div class="hydration-controls-grid"><article class="panel water-actions"><span class="kicker">快速记录</span><div><button type="button" data-water="150"><svg><use href="./icon-sprite.svg#plus"/></svg>150 ml</button><button type="button" data-water="250"><svg><use href="./icon-sprite.svg#plus"/></svg>250 ml</button><button type="button" data-water="350"><svg><use href="./icon-sprite.svg#plus"/></svg>350 ml</button><button type="button" data-water="500"><svg><use href="./icon-sprite.svg#plus"/></svg>500 ml</button></div><button type="button" class="text-link" id="undoWater">撤销最近一条</button><p class="form-status" id="hydrationActionState" role="status"></p></article><article class="panel hydration-settings"><form id="hydrationGoalForm"><h2>每日目标</h2><label for="hydrationGoalInput">毫升</label><input id="hydrationGoalInput" type="number" min="500" max="6000" step="50" required /><div class="hydration-presets"><button type="button" data-hydration-goal="1500">1500</button><button type="button" data-hydration-goal="2000">2000</button><button type="button" data-hydration-goal="2500">2500</button><button type="button" data-hydration-goal="3000">3000</button></div><button class="primary-button" type="submit">保存目标</button><p class="form-status" id="hydrationGoalState" role="status"></p></form><form id="hydrationReminderForm"><h2>补水提醒</h2><label class="switch-control"><input id="hydrationReminderEnabled" type="checkbox" /><span></span><b>启用提醒</b></label><label>间隔（分钟）<input id="hydrationReminderInterval" type="number" min="15" max="240" step="5" required /></label><label>开始<input id="hydrationReminderStart" type="time" required /></label><label>结束<input id="hydrationReminderEnd" type="time" required /></label><p>免打扰时段继承“通知中心”的统一设置；达到目标后今天将停止提醒。</p><button class="secondary-button" type="submit">保存提醒</button><p class="form-status" id="hydrationReminderState" role="status"></p></form></article><article class="panel hydration-log-panel"><div class="panel-heading"><h2>今日记录</h2><span id="hydrationLogCount">0 条</span></div><ol id="hydrationLog" class="hydration-log"></ol><details><summary>历史摘要</summary><div id="hydrationArchives" class="hydration-archives"></div></details></article></div>
+          </section>
+
+          <section class="page" id="page-reflection">
+            <div class="page-head"><div><h1>今日复盘</h1><p>回顾所做、所学与下一步，让每一天成为成长的杠杆。</p></div></div>
+            <div class="reflection-stats"><article><span>完成度</span><strong id="reflectionCompletion">0%</strong><small id="reflectionTaskMeta">0 / 0 待办</small></article><article><span>饮水量</span><strong id="reflectionWater">0L</strong><small id="reflectionWaterGoal">目标 0L</small></article><article><span>摘录</span><strong id="reflectionNotes">0</strong><small>今日沉淀</small></article><article><span>书架</span><strong id="reflectionBooks">0</strong><small>本书</small></article></div>
+            <form class="reflection-form panel" id="reflectionForm"><h2>三个问题</h2><p>每天回答这三个问题，是建立自我反馈循环的简单方式。</p><label>今天做了什么？<textarea id="reflectionDid" placeholder="记录今天完成的具体事情…"></textarea></label><label>今天学到了什么？<textarea id="reflectionLearned" placeholder="今天的新认知、新技能、新视角…"></textarea></label><label>明天要改进什么？<textarea id="reflectionImprove" placeholder="明天希望改变的一件事…"></textarea></label><button class="primary-button">保存今日复盘</button></form>
+          </section>
+
+          <section class="page" id="page-island">
+            <div class="page-head">
+              <div><h1>灵动岛</h1><p>保持在桌面顶端，集中显示时间、音乐与设备状态。</p></div>
+              <label class="switch-control"><input type="checkbox" id="islandVisible" checked /><span></span><b>显示灵动岛</b></label>
+            </div>
+            <article class="island-studio panel">
+              <div class="island-preview-stage">
+                <div class="preview-glow"></div>
+                <div class="island-preview" id="islandPreview">
+                  <div class="preview-left"><i></i><span>MineWork</span></div>
+                  <div class="preview-center"><b id="previewTime">10:09</b><small>桌面已连接</small></div>
+                  <div class="preview-right"><span><svg><use href="./icon-sprite.svg#music-notes"/></svg></span><strong>等待播放</strong></div>
+                </div>
+                <span class="preview-caption">实时尺寸预览</span>
+              </div>
+              <div class="island-controls">
+                <div class="control-title"><h2>岛体宽度</h2><strong><b id="islandWidthValue">560</b> px</strong></div>
+                <input class="width-slider" id="islandWidth" type="range" min="420" max="760" step="10" value="560" />
+                <div class="slider-labels"><span>紧凑 420</span><span>宽阔 760</span></div>
+                <p>宽度会立即同步到桌面上的浮动灵动岛。点击岛体可展开详细状态。</p>
+                <label class="switch-control"><input type="checkbox" id="weatherIslandAutoRotate" /><span></span><b>自动轮换天气位置</b></label>
+                <label class="weather-rotation-seconds"><span>轮换间隔</span><input id="weatherIslandRotateSeconds" type="number" min="5" max="60" step="1" value="8" /><b>秒</b></label>
+                <label class="switch-control"><input type="checkbox" id="islandLocked" /><span></span><b>锁定并穿透鼠标</b></label>
+                <p id="islandLockHelp">锁定后可直接点击灵动岛后方内容；按 Ctrl+Alt+I 可随时解除锁定。</p>
+                <div class="island-actions">
+                  <button class="primary-button" id="showIsland">显示到桌面</button>
+                  <button class="secondary-button" id="hideIsland">暂时隐藏</button>
+                </div>
+              </div>
+            </article>
+            <div class="island-feature-grid">
+              <article class="mini-feature"><span><svg><use href="./icon-sprite.svg#timer"/></svg></span><div><b>时间与日期</b><small>常驻桌面顶端，快速查看</small></div></article>
+              <article class="mini-feature"><span><svg><use href="./icon-sprite.svg#music-notes"/></svg></span><div><b>媒体状态</b><small>显示当前歌曲和播放状态</small></div></article>
+              <article class="mini-feature"><span><svg><use href="./icon-sprite.svg#gauge"/></svg></span><div><b>设备性能</b><small>CPU 与内存状态一眼可见</small></div></article>
+            </div>
+          </section>
+
+          <section class="page web-page" id="page-ai">
+            <div class="page-head compact">
+              <div><h1>AI 对话</h1><p>ChatGPT、Claude 与 DeepSeek，登录状态会保存在 MineWork 本机独立会话中。</p></div>
+              <div class="head-actions">
+                <button class="secondary-button icon-label" id="openAiExternal">在浏览器打开 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button>
+              </div>
+            </div>
+            <div class="browser-card">
+              <div class="browser-tabs" data-web-tabs="ai">
+                <button class="active" data-provider="chatgpt">ChatGPT</button>
+                <button data-provider="claude">Claude</button>
+                <button data-provider="deepseek">DeepSeek</button>
+                <span class="browser-address" id="aiAddress">chatgpt.com</span>
+                <button class="browser-refresh" data-refresh="ai" aria-label="刷新"><svg><use href="./icon-sprite.svg#arrows-clockwise"/></svg></button>
+              </div>
+              <div class="webview-stack" id="aiWebviews">
+                <div class="webview-slot" data-active="true" data-provider="chatgpt" data-src="https://chatgpt.com/" data-partition="persist:minework-v1-chatgpt"></div>
+                <div class="webview-slot" data-provider="claude" data-src="https://claude.ai/new" data-partition="persist:minework-v1-claude"></div>
+                <div class="webview-slot" data-provider="deepseek" data-src="https://chat.deepseek.com/" data-partition="persist:minework-v1-deepseek"></div>
+                <div class="web-loading">正在连接 AI 网页…</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="page" id="page-shortcuts">
+            <div class="page-head">
+              <div><h1>快捷打开</h1><p>只保留真正每天会用到的程序与文件。</p></div>
+              <div class="head-actions"><button class="secondary-button icon-label" id="addFolder"><svg><use href="./icon-sprite.svg#folder-open"/></svg>添加文件夹</button><button class="primary-button icon-label" id="addShortcut"><svg><use href="./icon-sprite.svg#plus"/></svg>添加项目</button></div>
+            </div>
+            <div class="shortcut-grid" id="shortcutGrid"></div>
+          </section>
+
+          <section class="page" id="page-countdown">
+            <div class="page-head">
+              <div><h1>倒计时</h1><p>重要的日子，始终一眼可见。</p></div>
+              <button class="primary-button icon-label" id="showCountdownForm"><svg><use href="./icon-sprite.svg#plus"/></svg>新建倒计时</button>
+            </div>
+            <form class="inline-form hidden" id="countdownForm">
+              <input id="countdownName" type="text" maxlength="36" placeholder="事件名称" required />
+              <input id="countdownDate" type="datetime-local" required />
+              <button class="primary-button" type="submit">保存</button>
+              <button class="secondary-button" type="button" id="cancelCountdown">取消</button>
+            </form>
+            <div class="countdown-presets" aria-label="常用倒计时">
+              <span>常用预设</span>
+              <button data-countdown-minutes="5">5 分钟</button>
+              <button data-countdown-minutes="10">10 分钟</button>
+              <button data-countdown-minutes="25">番茄钟 25 分钟</button>
+              <button data-countdown-minutes="60">专注 1 小时</button>
+              <button data-countdown-preset="tomorrow">明天 08:00</button>
+              <button data-countdown-preset="week">一周后</button>
+            </div>
+            <div class="countdown-grid" id="countdownGrid"></div>
+            <section class="alarm-workspace panel" aria-labelledby="alarmHeading">
+              <div class="page-head"><div><h2 id="alarmHeading">Alarms</h2><p>Main-process alarms keep their schedule while MineWork is resident.</p></div></div>
+              <form class="alarm-form" id="alarmForm">
+                <input id="alarmTitle" type="text" maxlength="120" placeholder="Alarm title" required />
+                <input id="alarmTime" type="time" required />
+                <select id="alarmRecurrence"><option value="once">Once</option><option value="daily">Daily</option><option value="weekdays">Selected weekdays</option><option value="weekly">Weekly</option></select>
+                <fieldset class="alarm-weekdays hidden" id="alarmWeekdays"><legend>Weekdays</legend><label><input type="checkbox" value="1" />Mon</label><label><input type="checkbox" value="2" />Tue</label><label><input type="checkbox" value="3" />Wed</label><label><input type="checkbox" value="4" />Thu</label><label><input type="checkbox" value="5" />Fri</label><label><input type="checkbox" value="6" />Sat</label><label><input type="checkbox" value="0" />Sun</label></fieldset>
+                <button class="primary-button" type="submit">Add alarm</button>
+              </form>
+              <div class="alarm-grid" id="alarmGrid"></div>
+            </section>
+          </section>
+
+          <section class="page" id="page-translate">
+            <div class="page-head">
+              <div><h1>翻译</h1><p>简洁、快速，只留下输入与结果。</p></div>
+            </div>
+            <div class="translator panel">
+              <div class="language-bar">
+                <select id="sourceLanguage">
+                  <option value="auto">自动检测</option><option value="zh-CN">中文</option><option value="en">英语</option>
+                  <option value="ja">日语</option><option value="ko">韩语</option><option value="fr">法语</option>
+                  <option value="de">德语</option><option value="es">西班牙语</option>
+                </select>
+                <button type="button" id="swapLanguages" aria-label="交换语言"><svg><use href="./icon-sprite.svg#arrows-clockwise"/></svg></button>
+                <select id="targetLanguage">
+                  <option value="zh-CN">中文</option><option value="en" selected>英语</option>
+                  <option value="ja">日语</option><option value="ko">韩语</option><option value="fr">法语</option>
+                  <option value="de">德语</option><option value="es">西班牙语</option>
+                </select>
+              </div>
+              <div class="translate-columns">
+                <div class="translate-box">
+                  <textarea id="sourceText" maxlength="5000" placeholder="输入或粘贴文字…"></textarea>
+                  <span class="char-count"><b id="charCount">0</b> / 5000</span>
+                </div>
+                <div class="translate-divider"></div>
+                <div class="translate-box result-box">
+                  <textarea id="translatedText" readonly placeholder="翻译结果会显示在这里"></textarea>
+                  <button class="copy-button" id="copyTranslation">复制</button>
+                </div>
+              </div>
+              <div class="translate-actions"><span id="translateStatus">输入内容后自动翻译</span><span class="auto-translate-pill"><i></i>自动翻译已开启</span></div>
+            </div>
+          </section>
+
+          <section class="page" id="page-performance">
+            <div class="page-head">
+              <div><h1>设备性能</h1><p>实时掌握系统负载、硬件状态与运行节奏。</p></div>
+              <span class="live-pill" id="performanceStatus"><i></i>实时采样</span>
+            </div>
+            <div class="performance-cockpit">
+              <article class="metric-panel performance-hero blue">
+                <div class="performance-card-heading"><div><span class="metric-kicker">PROCESSOR</span><h2>核心负载</h2></div><small>每 2 秒刷新</small></div>
+                <div class="cpu-command-display">
+                  <div class="cpu-orbit" id="cpuOrbit"><div><b id="cpuUsage">--</b><small>CPU</small></div></div>
+                  <div class="cpu-command-copy"><h3 id="cpuModel">正在读取处理器</h3><p>当前系统处理器的实时平均负载</p><div class="metric-track"><i id="cpuBar"></i></div></div>
+                </div>
+                <div class="performance-detail-pair">
+                  <span><small>当前频率</small><strong id="cpuSpeed">不适用</strong></span>
+                  <span><small>核心拓扑</small><strong id="cpuTopology">正在识别</strong><i id="cpuCores">-- 逻辑处理器</i></span>
+                </div>
+              </article>
+              <div class="performance-satellite-grid">
+                <article class="metric-panel performance-satellite purple">
+                  <div class="metric-top"><span>内存压力</span><b id="memoryUsage">--</b></div>
+                  <div class="metric-track"><i id="memoryBar"></i></div>
+                  <h3 id="memoryInfo">不适用</h3><p id="memoryAvailable">正在读取可用内存</p>
+                </article>
+                <article class="metric-panel performance-satellite cyan">
+                  <div class="metric-top"><span>系统磁盘</span><b id="diskUsage">--</b></div>
+                  <div class="metric-track"><i id="diskBar"></i></div>
+                  <h3 id="diskInfo">不适用</h3><p><span id="diskRoot">系统磁盘</span><i id="diskFree">正在读取空间</i></p>
+                </article>
+                <article class="metric-panel performance-satellite orange">
+                  <div class="metric-top"><span>图形设备</span><b>GPU</b></div>
+                  <div class="gpu-visual" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                  <h3 id="gpuName">正在识别 GPU</h3><p id="gpuMemory">显存信息读取中</p>
+                </article>
+                <article class="metric-panel performance-satellite mint">
+                  <div class="metric-top"><span>持续运行</span><b>UP</b></div>
+                  <div class="uptime-visual"><span></span><span></span><span></span></div>
+                  <h3 id="systemUptime">--</h3><p>本次系统运行时间</p>
+                </article>
+              </div>
+            </div>
+            <article class="system-facts panel">
+              <div class="system-facts-heading"><span class="metric-kicker">SYSTEM PROFILE</span><h2>本机信息</h2></div>
+              <div class="system-fact"><small>操作系统</small><strong id="systemOs">正在识别</strong></div>
+              <div class="system-fact"><small>系统架构</small><strong id="systemArch">不适用</strong></div>
+              <div class="system-fact"><small>设备名称</small><strong id="systemHost">不适用</strong></div>
+              <div class="system-fact"><small>启动时间</small><strong id="systemBoot">不适用</strong></div>
+              <div class="system-fact"><small>采样频率</small><strong>2 秒</strong></div>
+              <div class="system-fact"><small>最后更新</small><strong id="performanceUpdated">等待更新</strong></div>
+            </article>
+          </section>
+
+          <section class="page" id="page-music">
+            <div class="page-head">
+              <div><h1>音乐播放监控</h1><p>优先适配 MineRadio，并兼容 Windows 系统媒体会话。</p></div>
+              <span class="live-pill"><i></i>MINERADIO</span>
+            </div>
+            <div class="music-stage panel">
+              <div class="large-album" id="albumArtwork"><span><svg><use href="./icon-sprite.svg#music-notes"/></svg></span></div>
+              <div class="track-area">
+                <span class="kicker" id="mediaSource">WINDOWS MEDIA</span>
+                <h2 id="trackTitle">等待音乐播放</h2>
+                <p id="trackArtist">打开任意支持系统媒体控制的播放器</p>
+                <div class="timeline">
+                  <span id="positionText">0:00</span><div class="timeline-track"><i id="timelineProgress"></i></div><span id="durationText">0:00</span>
+                </div>
+                <div class="media-controls">
+                  <button data-media="previous" aria-label="上一首"><svg><use href="./icon-sprite.svg#skip-back"/></svg></button>
+                  <button class="main-control" data-media="play-toggle" aria-label="播放或暂停" id="mainPlayButton"><svg><use href="./icon-sprite.svg#play"/></svg></button>
+                  <button data-media="next" aria-label="下一首"><svg><use href="./icon-sprite.svg#skip-forward"/></svg></button>
+                </div>
+                <p class="media-message" id="mediaMessage">正在连接系统媒体会话…</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="page web-page" id="page-mail">
+            <div class="page-head compact">
+              <div><h1>邮箱</h1><p>Gmail、Outlook、网易与 QQ 邮箱，登录状态只保存在本机。</p></div>
+              <div class="head-actions">
+                <button class="primary-button hidden" id="secureMailLogin">Chrome 安全登录</button>
+                <button class="secondary-button icon-label" id="openMailExternal">在浏览器打开 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button>
+              </div>
+            </div>
+            <div class="browser-card">
+              <div class="browser-tabs" data-web-tabs="mail">
+                <button class="active" data-provider="gmail">Gmail</button>
+                <button data-provider="outlook">Outlook</button>
+                <button data-provider="netease">网易邮箱</button>
+                <button data-provider="qqmail">QQ邮箱</button>
+                <span class="browser-address" id="mailAddress">mail.google.com</span>
+                <button class="browser-refresh" data-refresh="mail" aria-label="刷新"><svg><use href="./icon-sprite.svg#arrows-clockwise"/></svg></button>
+              </div>
+              <div class="mail-status-grid" aria-label="Mail status">
+                <span id="mailStatus-gmail" data-status="unknown">Gmail · Waiting</span>
+                <span id="mailStatus-outlook" data-status="unknown">Outlook · Waiting</span>
+                <span id="mailStatus-netease" data-status="unknown">NetEase · Waiting</span>
+                <span id="mailStatus-qqmail" data-status="unknown">QQ Mail · Waiting</span>
+              </div>
+              <div class="webview-stack" id="mailWebviews">
+                <div class="webview-slot" data-active="true" data-provider="gmail" data-src="https://mail.google.com/" data-partition="persist:minework-v1-gmail"></div>
+                <div class="webview-slot" data-provider="outlook" data-src="https://outlook.office.com/mail/" data-partition="persist:minework-v1-outlook"></div>
+                <div class="webview-slot" data-provider="netease" data-src="https://mail.163.com/" data-partition="persist:minework-v1-netease"></div>
+                <div class="webview-slot" data-provider="qqmail" data-src="https://mail.qq.com/" data-partition="persist:minework-v1-qqmail"></div>
+                <div class="web-loading">正在连接邮箱网页…</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="page" id="page-notifications">
+            <div class="page-head notification-head">
+              <div><h1>閫氱煡 <span class="notification-count" id="notificationUnreadCount">0</span></h1><p>MineWork alerts and reminder history.</p></div>
+              <div class="head-actions"><button class="secondary-button" id="notificationTest">Test</button><button class="secondary-button" id="notificationMarkAll">Mark all read</button><button class="secondary-button" id="notificationClear">Clear</button></div>
+            </div>
+            <div class="notification-layout">
+              <section class="notification-history" aria-label="Notification history">
+                <div class="notification-filters" role="group" aria-label="Notification filters">
+                  <button class="active" data-notification-filter="all">All</button><button data-notification-filter="unread">Unread</button><button data-notification-filter="mail">Mail</button><button data-notification-filter="schedule">Schedule</button><button data-notification-filter="performance">Performance</button><button data-notification-filter="health">Health</button>
+                </div>
+                <div id="notificationList" class="notification-list" aria-live="polite"></div>
+                <button class="secondary-button hidden" id="notificationLoadMore">Load more</button>
+              </section>
+              <aside class="notification-settings panel">
+                <form id="notificationSettingsForm">
+                  <div class="settings-heading"><h2>Delivery</h2><span id="notificationSaveState" role="status"></span></div>
+                  <label class="notification-setting"><span>Notifications</span><input name="masterEnabled" type="checkbox" checked /></label>
+                  <label class="notification-setting"><span>Mail privacy</span><input id="mailPrivacy" name="mailPrivacy" type="checkbox" /></label>
+                  <fieldset><legend>Channels</legend>
+                    <label><input name="channels.windows" type="checkbox" /> Windows</label><label><input name="channels.island" type="checkbox" /> Island</label><label><input name="channels.sound" type="checkbox" /> Sound</label>
+                  </fieldset>
+                  <fieldset><legend>Do not disturb</legend>
+                    <label><input name="quietHours.enabled" type="checkbox" /> Enabled</label><label>Start <input name="quietHours.start" type="time" /></label><label>End <input name="quietHours.end" type="time" /></label>
+                  </fieldset>
+                  <fieldset class="notification-sources"><legend>Sources</legend>
+                    <label><input name="sources.mail" type="checkbox" /> Mail</label><label><input name="sources.performance" type="checkbox" /> Performance</label><label><input name="sources.countdown" type="checkbox" /> Countdown</label><label><input name="sources.alarm" type="checkbox" /> Alarm</label><label><input name="sources.calendar" type="checkbox" /> Calendar</label><label><input name="sources.anniversary" type="checkbox" /> Anniversary</label><label><input name="sources.holiday" type="checkbox" /> Holiday</label><label><input name="sources.hydration" type="checkbox" /> Hydration</label>
+                  </fieldset>
+                  <fieldset><legend>Performance alerts</legend><label>CPU % <input name="performanceRules.cpuThreshold" type="number" min="1" max="100" /></label><label>Memory % <input name="performanceRules.memoryThreshold" type="number" min="1" max="100" /></label><label>Disk free % <input name="performanceRules.diskFreePercentThreshold" type="number" min="0" max="100" /></label><label>Disk free GB <input name="performanceRules.diskFreeBytesThresholdGb" type="number" min="0" max="100000" /></label><label>Sustain seconds <input name="performanceRules.sustainSeconds" type="number" min="1" max="3600" /></label><label>Cooldown minutes <input name="performanceRules.cooldownMinutes" type="number" min="1" max="1440" /></label></fieldset>
+                  <fieldset><legend>Holiday reminders</legend><label><input name="holidayReminder.enabled" type="checkbox" /> Enabled</label><label>Time <input name="holidayReminder.time" type="time" /></label><label>Days before <select name="holidayReminder.daysBefore"><option value="0">当天</option><option value="1">1 天</option><option value="3">3 天</option><option value="7">7 天</option></select></label><label><input name="holidayReminder.chinaOfficial" type="checkbox" /> 中国法定节假日</label><label><input name="holidayReminder.chinaTraditional" type="checkbox" /> 中国传统节日</label><label><input name="holidayReminder.international" type="checkbox" /> 国际重要节日</label></fieldset>
+                  <fieldset><legend>More reminder settings</legend><button class="secondary-button" type="button" data-go="calendar">纪念日提前提醒</button><button class="secondary-button" type="button" data-go="hydration">喝水间隔与时段</button></fieldset>
+                  <div class="settings-actions"><button class="primary-button" type="submit">Save</button><button class="secondary-button" type="button" id="notificationReset">Reset</button><button class="secondary-button" type="button" id="notificationSettingsTest">Test</button></div>
+                </form>
+              </aside>
+            </div>
+          </section>
+        </main>
+      </div>
+      <div class="toast" id="toast"></div>
+      <div class="modal-backdrop hidden" id="accountModal">
+        <form class="account-dialog" id="accountForm">
+          <button type="button" class="modal-close" id="closeAccountModal" aria-label="关闭"><svg><use href="./icon-sprite.svg#x"/></svg></button>
+          <h2>你好，欢迎回来</h2><p>无需密码。输入用户名，就能把这台工作台变成你的空间。</p>
+          <label>用户名<input id="usernameInput" maxlength="32" placeholder="你的名字" required /></label>
+          <label class="resident-option"><input id="stayResident" type="checkbox" checked /><span></span><div><b>关闭后驻留后台</b><small>点击关闭按钮时隐藏到托盘，提醒和灵动岛继续工作</small></div></label>
+          <button class="primary-button account-submit">进入 MineWork</button>
+        </form>
+      </div>
+    </div>
+    <script src="../weather-model.js"></script>
+    <script src="../calendar-model.js"></script>
+    <script src="../hydration-model.js"></script>
+    <script src="./ui-model.js"></script>
+    <script src="./ui-effects.js"></script>
+    <script src="./scheduler-controller.js"></script>
+    <script src="./hydration-controller.js"></script>
+    <script src="./news-controller.js"></script>
+    <script src="../mail-integration.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

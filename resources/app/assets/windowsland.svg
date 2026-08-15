@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="frame" x1="35" y1="22" x2="224" y2="235" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3FC0FF"/>
+      <stop offset=".46" stop-color="#5C79FF"/>
+      <stop offset="1" stop-color="#A052E8"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="73" y1="87" x2="184" y2="168" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#72D8FF"/>
+      <stop offset=".5" stop-color="#7181FF"/>
+      <stop offset="1" stop-color="#BD6BFF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(128 128) rotate(90) scale(97)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#596FFF" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#05070C" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-50%" width="160%" height="200%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="66" fill="#05070C"/>
+  <rect x="10" y="10" width="236" height="236" rx="64" fill="none" stroke="url(#frame)" stroke-width="3"/>
+  <circle cx="128" cy="128" r="103" fill="url(#glow)"/>
+  <rect x="28" y="75" width="200" height="106" rx="53" fill="#020305" stroke="#242936" stroke-width="2"/>
+  <rect x="38" y="85" width="180" height="86" rx="43" fill="#090B11"/>
+  <ellipse cx="128" cy="174" rx="67" ry="8" fill="#5266E8" opacity=".24" filter="url(#shadow)"/>
+  <path d="M65 102 86 155c2 5 6 8 11 8h4c5 0 9-3 11-8l16-38 16 38c2 5 6 8 11 8h4c5 0 9-3 11-8l21-53h-23l-12 36-15-36h-25l-15 36-12-36H65Z" fill="url(#letter)"/>
+  <rect x="112" y="88" width="32" height="10" rx="5" fill="#010205"/>
+  <circle cx="137" cy="93" r="2.2" fill="#506DB2"/>
+  <circle cx="137" cy="93" r="1" fill="#83A7FF"/>
+</svg>

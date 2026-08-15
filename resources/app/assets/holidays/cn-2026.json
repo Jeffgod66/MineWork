@@ -1,0 +1,31 @@
+{
+  "version": "cn-mainland-2026.1",
+  "year": 2026,
+  "source": {
+    "url": "https://www.gov.cn/zhengce/zhengceku/202511/content_7047091.htm",
+    "title": "国务院办公厅关于2026年部分节假日安排的通知（国办发明电〔2025〕7号）",
+    "publishedAt": "2025-11-04",
+    "retrievedAt": "2026-08-13"
+  },
+  "days": {
+    "2026-01-01": "rest", "2026-01-02": "rest", "2026-01-03": "rest", "2026-01-04": "work",
+    "2026-02-14": "work", "2026-02-15": "rest", "2026-02-16": "rest", "2026-02-17": "rest", "2026-02-18": "rest", "2026-02-19": "rest", "2026-02-20": "rest", "2026-02-21": "rest", "2026-02-22": "rest", "2026-02-23": "rest", "2026-02-28": "work",
+    "2026-04-04": "rest", "2026-04-05": "rest", "2026-04-06": "rest",
+    "2026-05-01": "rest", "2026-05-02": "rest", "2026-05-03": "rest", "2026-05-04": "rest", "2026-05-05": "rest", "2026-05-09": "work",
+    "2026-06-19": "rest", "2026-06-20": "rest", "2026-06-21": "rest",
+    "2026-09-20": "work", "2026-09-25": "rest", "2026-09-26": "rest", "2026-09-27": "rest",
+    "2026-10-01": "rest", "2026-10-02": "rest", "2026-10-03": "rest", "2026-10-04": "rest", "2026-10-05": "rest", "2026-10-06": "rest", "2026-10-07": "rest", "2026-10-10": "work"
+  },
+  "festivals": [
+    { "id": "spring-festival", "name": "春节", "category": "china-traditional", "lunar": { "month": 1, "day": 1, "isLeap": false } },
+    { "id": "lantern-festival", "name": "元宵节", "category": "china-traditional", "lunar": { "month": 1, "day": 15, "isLeap": false } },
+    { "id": "qingming", "name": "清明节", "category": "china-traditional", "solarTerm": "清明" },
+    { "id": "dragon-boat", "name": "端午节", "category": "china-traditional", "lunar": { "month": 5, "day": 5, "isLeap": false } },
+    { "id": "qixi", "name": "七夕", "category": "china-traditional", "lunar": { "month": 7, "day": 7, "isLeap": false } },
+    { "id": "mid-autumn", "name": "中秋节", "category": "china-traditional", "lunar": { "month": 8, "day": 15, "isLeap": false } },
+    { "id": "chongyang", "name": "重阳节", "category": "china-traditional", "lunar": { "month": 9, "day": 9, "isLeap": false } },
+    { "id": "national-day", "name": "国庆节", "category": "china-commemoration", "date": "2026-10-01" },
+    { "id": "army-day", "name": "建军节", "category": "china-commemoration", "date": "2026-08-01" },
+    { "id": "constitution-day", "name": "国家宪法日", "category": "china-commemoration", "date": "2026-12-04" }
+  ]
+}

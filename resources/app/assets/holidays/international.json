@@ -1,0 +1,16 @@
+{
+  "version": "international-important-2026.1",
+  "items": [
+    { "id": "new-year", "name": "元旦", "category": "international", "dateRule": { "type": "fixed", "month": 1, "day": 1 }, "changesWorkday": false },
+    { "id": "international-womens-day", "name": "国际妇女节", "category": "international", "dateRule": { "type": "fixed", "month": 3, "day": 8 }, "changesWorkday": false },
+    { "id": "world-health-day", "name": "世界卫生日", "category": "international", "dateRule": { "type": "fixed", "month": 4, "day": 7 }, "changesWorkday": false },
+    { "id": "earth-day", "name": "世界地球日", "category": "international", "dateRule": { "type": "fixed", "month": 4, "day": 22 }, "changesWorkday": false },
+    { "id": "labour-day", "name": "国际劳动节", "category": "international", "dateRule": { "type": "fixed", "month": 5, "day": 1 }, "changesWorkday": false },
+    { "id": "childrens-day", "name": "国际儿童节", "category": "international", "dateRule": { "type": "fixed", "month": 6, "day": 1 }, "changesWorkday": false },
+    { "id": "world-environment-day", "name": "世界环境日", "category": "international", "dateRule": { "type": "fixed", "month": 6, "day": 5 }, "changesWorkday": false },
+    { "id": "world-peace-day", "name": "国际和平日", "category": "international", "dateRule": { "type": "fixed", "month": 9, "day": 21 }, "changesWorkday": false },
+    { "id": "un-day", "name": "联合国日", "category": "international", "dateRule": { "type": "fixed", "month": 10, "day": 24 }, "changesWorkday": false },
+    { "id": "thanksgiving", "name": "感恩节", "category": "international", "dateRule": { "type": "computed", "rule": "fourth-thursday", "month": 11 }, "changesWorkday": false },
+    { "id": "christmas", "name": "圣诞节", "category": "international", "dateRule": { "type": "fixed", "month": 12, "day": 25 }, "changesWorkday": false }
+  ]
+}

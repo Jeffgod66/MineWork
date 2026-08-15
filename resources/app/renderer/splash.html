@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style>
+      *{box-sizing:border-box}
+      html,body{width:100%;height:100%;margin:0;overflow:hidden;background:transparent}
+      body{display:grid;place-items:center;font-family:"Segoe UI Variable","Microsoft YaHei UI","Segoe UI",sans-serif}
+      .stage{position:relative;width:620px;height:340px;overflow:hidden;border:1px solid rgba(106,144,185,.34);border-radius:28px;background:linear-gradient(150deg,#EAF3FD,#C6DDF4 55%,#8FB3DC);color:#23364E;box-shadow:0 30px 90px rgba(70,100,140,.34);animation:stage-in .62s cubic-bezier(.16,1,.3,1) both;transition:opacity .46s ease,transform .48s cubic-bezier(.16,1,.3,1),filter .46s ease}
+      .stage.leaving{opacity:0;transform:scale(.95) translateY(-9px);filter:blur(5px)}
+      .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(106,144,185,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(106,144,185,.10) 1px,transparent 1px);background-size:42px 42px;opacity:.55;mask-image:linear-gradient(to bottom,transparent,#000 42%,transparent)}
+      .date{position:absolute;top:25px;left:29px;font:600 9px Consolas,monospace;letter-spacing:2px;color:#56718F;opacity:0;animation:reveal .4s .3s forwards}
+      .owner{position:absolute;top:24px;right:29px;font:600 9px Consolas,monospace;letter-spacing:2px;color:#56718F;opacity:0;animation:reveal .4s .4s forwards}
+      .island{position:absolute;left:50%;top:50%;width:118px;height:42px;transform:translate(-50%,-50%);border-radius:24px;background:linear-gradient(160deg,#FFFFFF,#D7E8FB);color:#23364E;overflow:hidden;border:1px solid rgba(106,144,185,.4);box-shadow:0 15px 34px rgba(70,100,140,.32),inset 0 1px 0 rgba(255,255,255,.9);animation:island-open 1.1s .32s cubic-bezier(.16,1,.3,1) forwards}
+      .camera{position:absolute;left:50%;top:10px;width:36px;height:18px;transform:translateX(-50%);border-radius:13px;background:#050607;box-shadow:inset 0 1px 2px rgba(0,0,0,.8);animation:camera-away .45s 1.02s forwards}
+      .content{position:absolute;inset:0;display:grid;place-items:center;opacity:0;animation:reveal .28s 1.02s forwards}
+      .signature-lockup{width:min(390px,82%);display:grid;justify-items:center;text-align:center;transform:translateY(5px)}
+      .signature-mask{position:relative;width:100%;padding:4px 18px 11px;overflow:hidden;clip-path:inset(0 100% 0 0);animation:signature-reveal 520ms 1.04s cubic-bezier(.16,1,.3,1) forwards}
+      .brand-signature{display:block;width:100%;height:auto;filter:drop-shadow(0 12px 13px rgba(65,101,142,.18))}
+      .signature-lockup small{margin-top:1px;color:#56718F;font:600 7px Consolas,monospace;letter-spacing:2.8px;opacity:0;transform:translateY(5px);animation:caption-in .4s 1.48s forwards}
+      .line{position:absolute;left:50%;bottom:56px;width:0;height:1px;transform:translateX(-50%);background:#7CA2CD;animation:line-in .5s 1.26s forwards}
+      .tagline{position:absolute;left:0;right:0;bottom:33px;text-align:center;color:#56718F;font:600 8px Consolas,monospace;letter-spacing:3px;opacity:0;animation:reveal .45s 1.42s forwards}
+      @keyframes stage-in{from{opacity:0;transform:scale(.86);clip-path:inset(45% 39% round 24px)}to{opacity:1;transform:none;clip-path:inset(0 round 28px)}}
+      @keyframes island-open{55%{width:430px;height:42px}to{width:560px;height:205px;border-radius:24px;background:linear-gradient(150deg,#FFFFFF,#D7E8FB);color:#23364E;box-shadow:inset 0 0 0 1px rgba(106,144,185,.28)}}
+      @keyframes camera-away{to{opacity:0;transform:translateX(-50%) scale(.6)}}
+      @keyframes reveal{to{opacity:1}}
+      @keyframes caption-in{to{opacity:1;transform:none}}
+      @keyframes line-in{to{width:160px}}
+      @keyframes signature-reveal{to{clip-path:inset(0 0 0 0)}}
+      @media (prefers-reduced-motion:reduce){.stage,.date,.owner,.island,.camera,.content,.signature-mask,.signature-lockup small,.line,.tagline{animation:none!important}.stage{opacity:1;transform:none;clip-path:none}.island{width:560px;height:205px;border-radius:24px}.camera{display:none}.content,.date,.owner,.signature-lockup small,.tagline{opacity:1}.signature-mask{animation:none!important;clip-path:inset(0)}.line{width:160px}.stage.leaving{transition-duration:.2s;transform:none;filter:none}}
+    </style>
+  </head>
+  <body>
+    <main class="stage" id="stage">
+      <div class="grid"></div><span class="date">PERSONAL WORKSPACE / 2026</span><span class="owner">用户</span>
+      <div class="island"><div class="camera"></div><div class="content"><div class="signature-lockup"><div class="signature-mask"><img class="brand-signature" src="./brand-wordmark.svg" alt="MineWork" /></div><small>DESIGNED FOR 用户</small></div></div></div>
+      <div class="line"></div><div class="tagline">ONE PLACE FOR FOCUSED WORK</div>
+    </main>
+    <script>setTimeout(()=>document.getElementById("stage").classList.add("leaving"),1980)</script>
+  </body>
+</html>

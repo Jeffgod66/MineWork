@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">MineWork</title>
+  <desc id="desc">A glacier field carrying a continuous MineWork workflow ribbon</desc>
+  <defs>
+    <linearGradient id="glacier" x1="38" y1="27" x2="222" y2="231" gradientUnits="userSpaceOnUse"><stop stop-color="#F4FBFF"/><stop offset=".5" stop-color="#B7D9F1"/><stop offset="1" stop-color="#79A8CF"/></linearGradient>
+    <linearGradient id="ribbon" x1="47" y1="91" x2="199" y2="187" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#E6F1F8"/></linearGradient>
+    <linearGradient id="fold" x1="111" y1="160" x2="213" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#355E7D"/><stop offset="1" stop-color="#7399B6"/></linearGradient>
+  </defs>
+  <path d="M72 18h112c30 0 54 24 54 54v112c0 30-24 54-54 54H72c-30 0-54-24-54-54V72c0-30 24-54 54-54Z" fill="url(#glacier)"/>
+  <path id="workflow-ribbon" d="M43 183V101c0-13 10-23 23-23 7 0 14 3 18 9l43 55 53-64 27-10-17 30v81c0 13-10 23-23 23s-23-10-23-23v-31l-14 18c-8 11-24 11-33 1l-28-35v51c0 13-10 23-23 23s-23-10-23-23Z" fill="url(#ribbon)"/>
+  <path d="m127 142 53-64 27-10-51 76-26 22c-8 11-24 11-33 1l-7-9 37-16Z" fill="url(#fold)"/>
+</svg>

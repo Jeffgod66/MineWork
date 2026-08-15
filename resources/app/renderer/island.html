@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; frame-src https:;" />
+    <title></title>
+    <link rel="stylesheet" href="./island.css" />
+  </head>
+  <body>
+    <!--
+    MineWork island, same direction contract (seed 79f4b4c4): the floating split-flap lamp.
+    OWN-WORLD: glacier mist capsule (pearl to glacier gradient), steel ink numerals, one steel-blue live orb, ruled slides. Palette synced from image_colors.js.
+    FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+    -->
+    <main class="island-shell" id="islandShell" title="悬停展开，滚动浏览页面，双击打开主窗口">
+      <div class="island-idle">
+        <div class="idle-side left"><span class="live-orb"></span><div class="idle-copy"><b id="islandPrimary">专注模式</b><small id="islandSecondary">今日从容前行</small></div></div>
+        <div class="island-camera"><i></i></div>
+        <div class="idle-side right"><div class="idle-copy"><b id="islandTime">10:09</b><small id="islandDate">7月28日 周二</small></div><span class="media-orb" id="islandMediaOrb"><svg><use href="./icon-sprite.svg#house"/></svg></span></div>
+      </div>
+
+      <section class="island-expanded">
+        <div class="island-page-viewport">
+          <div class="island-page-track" id="islandPageTrack" style="transform: translateX(0%)">
+            <article class="island-slide overview-slide">
+              <div class="overview-clock"><strong id="overviewTime">10:09</strong><span id="overviewDate">7月28日 · 星期二</span><small id="overviewGreeting">你好，朋友</small></div>
+              <div class="overview-weather"><div class="island-weather-controls"><button id="islandWeatherPrevious" aria-label="上一个天气位置"><svg><use href="./icon-sprite.svg#caret-left"/></svg></button><span id="islandWeatherPosition">0 / 0</span><button id="islandWeatherNext" aria-label="下一个天气位置"><svg><use href="./icon-sprite.svg#caret-right"/></svg></button></div><div><b id="overviewWeatherTemp">--°</b><i id="overviewWeatherGlyph"><svg><use href="./icon-sprite.svg#cloud-sun"/></svg></i></div><strong id="overviewWeatherCity">尚未选择城市</strong><small id="overviewWeatherDesc">在每日天气页设置城市</small></div>
+              <button class="slide-action icon-label" data-open-page="weather">每日天气 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button>
+              <div class="overview-pulse-grid">
+                <div><svg><use href="./icon-sprite.svg#check-square"/></svg><span><b id="overviewTaskPulse">0 / 0</b><small>今日待办</small></span></div>
+                <div><svg><use href="./icon-sprite.svg#drop"/></svg><span><b id="overviewHydration">0 ml</b><small>今日饮水</small></span></div>
+                <div><svg><use href="./icon-sprite.svg#timer"/></svg><span><b id="overviewCountdown">暂无</b><small>最近倒计时</small></span></div>
+              </div>
+            </article>
+
+            <article class="island-slide task-slide">
+              <div class="task-summary"><h2>今日待办</h2><strong id="islandTaskProgress">0 / 0</strong></div>
+              <div class="island-task-list" id="islandTaskList"><p>今天还没有待办</p></div>
+              <button class="slide-action icon-label" data-open-page="tasks">管理待办 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button>
+            </article>
+
+            <article class="island-slide ai-tool-slide">
+              <div class="island-tool-head"><div><h2>AI 对话</h2></div><div class="island-provider-tabs"><button class="active" data-island-ai="chatgpt">ChatGPT</button><button data-island-ai="deepseek">DeepSeek</button><button data-island-ai="claude">Claude</button></div><button class="slide-action icon-label" data-open-page="ai">主窗口 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button></div>
+              <div class="island-ai-host" id="islandAiHost">
+                <div class="island-ai-loading" id="islandAiLoading">选择此页面后加载 AI，可以直接在灵动岛中提问。</div>
+              </div>
+            </article>
+
+            <article class="island-slide translate-tool-slide">
+              <div class="island-tool-head"><div><h2>即时翻译</h2></div><div class="island-language-pair"><select id="islandSourceLanguage"><option value="auto">自动识别</option><option value="zh-CN">中文</option><option value="en">英语</option><option value="ja">日语</option><option value="ko">韩语</option><option value="fr">法语</option><option value="de">德语</option><option value="es">西班牙语</option></select><span><svg><use href="./icon-sprite.svg#arrow-right"/></svg></span><select id="islandTargetLanguage"><option value="zh-CN">中文</option><option value="en" selected>英语</option><option value="ja">日语</option><option value="ko">韩语</option><option value="fr">法语</option><option value="de">德语</option><option value="es">西班牙语</option></select></div><button class="slide-action" id="islandTranslateButton">翻译</button></div>
+              <div class="island-translate-grid"><textarea id="islandSourceText" maxlength="2000" placeholder="输入需要翻译的文字…"></textarea><div class="island-translate-result"><span id="islandTranslateStatus">等待输入</span><p id="islandTranslatedText">翻译结果会显示在这里。</p><button id="islandCopyTranslation">复制结果</button></div></div>
+            </article>
+
+            <article class="island-slide music-slide">
+              <div class="island-art" id="islandArt"><svg><use href="./icon-sprite.svg#music-notes"/></svg></div><div class="expanded-copy"><h2 id="islandTrack">等待音乐播放</h2><p id="islandArtist">Windows 媒体会话</p></div>
+              <div class="island-media-controls"><button data-island-media="previous" aria-label="上一首"><svg><use href="./icon-sprite.svg#skip-back"/></svg></button><button class="main" data-island-media="play-toggle" id="islandPlay" aria-label="播放或暂停"><svg><use href="./icon-sprite.svg#play"/></svg></button><button data-island-media="next" aria-label="下一首"><svg><use href="./icon-sprite.svg#skip-forward"/></svg></button></div>
+            </article>
+
+            <article class="island-slide performance-slide">
+              <div class="performance-copy"><h2>设备性能</h2><p>CPU、内存与磁盘实时状态</p></div>
+              <div class="metric-stack"><div class="island-metric"><span>CPU</span><b id="islandCpu">0%</b><i><em id="islandCpuBar"></em></i></div><div class="island-metric"><span>内存</span><b id="islandMemory">0%</b><i><em id="islandMemoryBar"></em></i></div><div class="island-metric"><span>磁盘</span><b id="islandDisk">0%</b><i><em id="islandDiskBar"></em></i></div></div>
+            </article>
+
+            <article class="island-slide services-slide">
+              <div class="service-title"><h2>快捷入口</h2><p>抵达个人空间的每个角落</p></div>
+              <div class="service-grid"><button data-open-page="home"><i><svg><use href="./icon-sprite.svg#house"/></svg></i><span>主页</span></button><button data-open-page="weather"><i><svg><use href="./icon-sprite.svg#cloud-sun"/></svg></i><span>每日天气</span></button><button data-open-page="news"><i><svg><use href="./icon-sprite.svg#newspaper"/></svg></i><span>每日资讯</span></button><button data-open-page="calendar"><i><svg><use href="./icon-sprite.svg#calendar"/></svg></i><span>日历行程</span></button><button data-open-page="library"><i><svg><use href="./icon-sprite.svg#books"/></svg></i><span>我的书架</span></button><button data-open-page="shortcuts"><i><svg><use href="./icon-sprite.svg#rocket-launch"/></svg></i><span>快捷打开</span></button></div>
+            </article>
+
+            <article class="island-slide schedule-slide">
+              <div class="new-page-heading"><span><svg><use href="./icon-sprite.svg#calendar"/></svg></span><div><h2>今日日程</h2><p id="islandScheduleDate">今天</p></div></div>
+              <div class="schedule-list" id="islandScheduleList"><p>今天暂无日程</p></div>
+              <button class="slide-action icon-label" data-open-page="calendar">打开日历 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button>
+            </article>
+
+            <article class="island-slide countdown-slide">
+              <div class="new-page-heading"><span><svg><use href="./icon-sprite.svg#timer"/></svg></span><div><h2 id="islandCountdownName">下一个重要时刻</h2><p id="islandCountdownDate">尚未创建倒计时</p></div></div>
+              <div class="countdown-compact" id="islandCountdownUnits"><strong>--</strong><small>等待计划</small></div>
+              <button class="slide-action icon-label" data-open-page="countdown">管理倒计时 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button>
+            </article>
+
+            <article class="island-slide focus-slide">
+              <div class="new-page-heading"><span><svg><use href="./icon-sprite.svg#target"/></svg></span><div><h2>专注概览</h2><p id="islandFocusGreeting">保持轻盈，专注当下</p></div></div>
+              <div class="focus-metrics"><div><b id="islandFocusTasks">0%</b><small>待办进度</small></div><div><b id="islandFocusWater">0%</b><small>饮水进度</small></div><div><b id="islandFocusTime">--:--</b><small>当前时间</small></div></div>
+              <button class="slide-action icon-label" data-open-page="home">回到主页 <svg><use href="./icon-sprite.svg#arrow-square-out"/></svg></button>
+            </article>
+          </div>
+        </div>
+        <footer class="island-footer"><button class="lock-island" id="islandLock" aria-label="锁定并允许点击岛后内容" title="锁定鼠标穿透（Ctrl+Alt+I 解锁）"><svg><use href="./icon-sprite.svg#shield-check"/></svg></button><div class="page-dots" id="islandPageDots"><button class="active" data-island-page="0" aria-label="天气概览"></button><button data-island-page="1" aria-label="今日待办"></button><button data-island-page="2" aria-label="AI 对话"></button><button data-island-page="3" aria-label="即时翻译"></button><button data-island-page="4" aria-label="音乐"></button><button data-island-page="5" aria-label="性能"></button><button data-island-page="6" aria-label="快捷入口"></button><button data-island-page="7" aria-label="今日日程"></button><button data-island-page="8" aria-label="倒计时"></button><button data-island-page="9" aria-label="专注概览"></button></div><button class="hide-island" id="islandHide" aria-label="隐藏灵动岛"><svg><use href="./icon-sprite.svg#x"/></svg></button></footer>
+      </section>
+      <aside class="island-notification-overlay" id="islandNotificationOverlay" aria-live="polite" aria-hidden="true">
+        <button class="notification-attention" type="button" data-notification-action="open">
+          <span class="notification-attention-icon"><svg><use href="./icon-sprite.svg#bell"/></svg></span>
+          <span class="notification-attention-copy"><b id="islandNotificationTitle">MineWork 通知</b><small id="islandNotificationBody"></small></span>
+          <span class="notification-unread" id="islandNotificationUnread" aria-label="未读通知">0</span>
+        </button>
+        <button class="notification-dismiss" type="button" data-notification-action="dismiss" aria-label="忽略通知"><svg><use href="./icon-sprite.svg#x"/></svg></button>
+      </aside>
+    </main>
+    <script src="./ui-model.js"></script>
+    <script src="./island.js"></script>
+  </body>
+</html>
