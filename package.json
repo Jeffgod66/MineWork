@@ -1,0 +1,32 @@
+{
+  "name": "@jeffgod66/minework",
+  "version": "2.3.0",
+  "description": "MineWork 隐私脱敏后的 Electron 本地桌面工作台源码包。",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jeffgod66/MineWork.git"
+  },
+  "homepage": "https://github.com/Jeffgod66/MineWork",
+  "license": "GPL-3.0",
+  "files": [
+    "README.md",
+    "PRODUCT.md",
+    "DESIGN.md",
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSE.electron.txt",
+    "resources/app/*.js",
+    "resources/app/package.json",
+    "resources/app/assets",
+    "resources/app/mail-adapters",
+    "resources/app/notifications",
+    "resources/app/renderer",
+    "resources/app/scripts",
+    "resources/app/tests"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

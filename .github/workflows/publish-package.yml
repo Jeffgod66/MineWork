@@ -1,0 +1,33 @@
+name: Publish MineWork package
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out sanitized source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js and GitHub Packages auth
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@jeffgod66'
+
+      - name: Verify package contents
+        run: node scripts/verify-package.mjs
+
+      - name: Publish npm package to GitHub Packages
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
