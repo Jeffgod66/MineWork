@@ -17,7 +17,7 @@ const releaseFiles = [
 ];
 
 test("release-facing files contain no embedded identity or logged-in defaults", () => {
-  const prohibited = ["WmhvdSBXYW4gUWlu", "5ZGo55Cs6Iq5", "6aKc5pmf", "TWluZVdvcmsgwrcg5bey55m75b2V5pys5py6"]
+  const prohibited = ["TWluZVdvcmsgwrcg5bey55m75b2V5pys5py6", "QzpcVXNlcnNc", "QzovVXNlcnMv", "RDpcRXhhbXBsZVdvcmtzcGFjZQ==", "RDovRXhhbXBsZVdvcmtzcGFjZQ=="]
     .map((fixture) => Buffer.from(fixture, "base64").toString("utf8"));
 
   for (const filePath of releaseFiles) {

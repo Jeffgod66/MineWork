@@ -80,18 +80,14 @@ try {
     )
     $utf8 = [System.Text.UTF8Encoding]::new($false, $true)
     $identityPatterns = [ordered]@{
-        (Decode-ProhibitedFixture 'WmhvdSBXYW4gUWlu') = 'identity string: encoded fixture 1'
-        (Decode-ProhibitedFixture '5ZGo55Cs6Iq5') = 'identity string: encoded fixture 2'
-        (Decode-ProhibitedFixture '6aKc5pmf') = 'identity string: encoded fixture 3'
         (Decode-ProhibitedFixture 'TWluZVdvcmsgwrcg5bey55m75b2V5pys5py6') = 'logged-in default label: encoded fixture'
         (Decode-ProhibitedFixture 'QzpcVXNlcnNc') = 'absolute Windows user path: encoded fixture'
         (Decode-ProhibitedFixture 'QzovVXNlcnMv') = 'absolute Windows user path: encoded fixture'
-        (Decode-ProhibitedFixture 'RDpcTWluZVdvcms=') = 'absolute local path: encoded fixture'
-        (Decode-ProhibitedFixture 'RDovTWluZVdvcms=') = 'absolute local path: encoded fixture'
+        (Decode-ProhibitedFixture 'RDpcRXhhbXBsZVdvcmtzcGFjZQ==') = 'absolute local path: encoded fixture'
+        (Decode-ProhibitedFixture 'RDovRXhhbXBsZVdvcmtzcGFjZQ==') = 'absolute local path: encoded fixture'
     }
     $emailPattern = '[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}'
-    # This tracked test intentionally contains the identity fixtures it verifies;
-    # Task 3 will replace those visible fixtures with non-real-name values.
+    # This tracked test intentionally contains generic negative fixtures it verifies.
     $contentScanExclusions = @('resources/app/tests/privacy-sanitization.test.js')
 
     foreach ($path in $tracked) {
