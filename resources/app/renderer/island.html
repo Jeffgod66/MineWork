@@ -91,13 +91,15 @@
       <aside class="island-notification-overlay" id="islandNotificationOverlay" aria-live="polite" aria-hidden="true">
         <button class="notification-attention" type="button" data-notification-action="open">
           <span class="notification-attention-icon"><svg><use href="./icon-sprite.svg#bell"/></svg></span>
-          <span class="notification-attention-copy"><b id="islandNotificationTitle">MineWork 通知</b><small id="islandNotificationBody"></small></span>
-          <span class="notification-unread" id="islandNotificationUnread" aria-label="未读通知">0</span>
+          <span class="notification-attention-copy"><b id="islandNotificationTitle">MineWork 通知</b><small id="islandNotificationBody"></small><i id="islandNotificationSource" hidden></i></span>
+          <span class="notification-badges"><span class="notification-unread" id="islandNotificationUnread" aria-label="未读通知">0</span><span class="notification-group-count" id="islandNotificationCount" aria-label="同类通知数量" hidden></span></span>
         </button>
+        <button class="notification-read" type="button" data-notification-action="read" aria-label="标记已读"><svg><use href="./icon-sprite.svg#check"/></svg></button>
         <button class="notification-dismiss" type="button" data-notification-action="dismiss" aria-label="忽略通知"><svg><use href="./icon-sprite.svg#x"/></svg></button>
       </aside>
     </main>
     <script src="./ui-model.js"></script>
+    <script src="./island-notification-controller.js"></script>
     <script src="./island.js"></script>
   </body>
 </html>

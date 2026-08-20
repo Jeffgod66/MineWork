@@ -11,8 +11,8 @@ let collapseTimer = null;
 let idleTimer = null;
 let pageTransitionTimer = null;
 let pendingPageIntent = null;
-let pendingNotificationDelivery = null;
-let activeNotification = null;
+let notificationAttention = false;
+let attentionWasIdle = false;
 let islandTranslationTimer = null;
 let mediaState = null;
 let performanceState = null;
@@ -38,6 +38,16 @@ const islandTiming = window.mineworkUiModel?.islandMotionTiming(reduceMotion) ||
 let islandPhase = ISLAND_PHASES.COLLAPSED;
 let phaseRun = 0;
 let islandLocked = false;
+const notificationController = window.mineworkIslandNotifications.createIslandNotificationController({
+  actions: {
+    open: (id) => api.notifications.open(id),
+    read: (id) => api.notifications.markRead(id),
+    dismiss: (id) => api.notifications.dismiss(id)
+  },
+  onChange: renderNotificationOverlay,
+  onAttention: applyNotificationAttention,
+  timeoutMs: 8000
+});
 const weatherRotation = window.mineworkUiModel.createWeatherRotationController({ onChange: renderIslandWeather });
 
 function islandIcon(name, className = "") {
@@ -100,11 +110,25 @@ function resetIdleFade() {
   document.body.classList.remove("idle-dim");
   if (!islandLocked) api.island.setInteraction({ idle: false });
   idleTimer = setTimeout(() => {
-    if (!document.body.classList.contains("expanded") && !islandLocked) {
+    if (!document.body.classList.contains("expanded") && !islandLocked && !notificationAttention) {
       document.body.classList.add("idle-dim");
       api.island.setInteraction({ idle: true });
     }
   }, 8000);
+}
+
+function applyNotificationAttention(active) {
+  notificationAttention = active === true;
+  if (notificationAttention) attentionWasIdle = document.body.classList.contains("idle-dim");
+  const policy = window.mineworkUiModel?.islandAttentionPolicy({ locked: islandLocked, attentionActive: notificationAttention, wasIdle: attentionWasIdle }) || {};
+  if (notificationAttention) {
+    if (policy.interaction === "active") resetIdleFade();
+    return;
+  }
+  if (policy.interaction === "idle" && !document.body.classList.contains("expanded")) {
+    document.body.classList.add("idle-dim");
+    api.island.setInteraction({ idle: true });
+  }
 }
 
 function weatherGlyph(code) {
@@ -206,16 +230,12 @@ function finishPageTransition() {
   pageTrack.classList.remove("is-transitioning");
   pageTrack.dataset.direction = "none";
   if (pendingPageIntent !== null) {
-    const target = pendingPageIntent;
+    const intent = pendingPageIntent;
     pendingPageIntent = null;
-    showPage(target);
+    showPage(intent.target ?? intent, intent.direction ?? "none");
     return;
   }
-  if (pendingNotificationDelivery) {
-    const delivery = pendingNotificationDelivery;
-    pendingNotificationDelivery = null;
-    showNotificationDelivery(delivery);
-  }
+  notificationController.setBlocked(false);
 }
 
 function showPage(index, direction = "none", initial = false) {
@@ -238,6 +258,7 @@ function showPage(index, direction = "none", initial = false) {
   renderNewPages();
   refreshIdleCopy();
   if (!initial) {
+    notificationController.setBlocked(true);
     clearTimeout(pageTransitionTimer);
     pageTransitionTimer = setTimeout(finishPageTransition, islandTiming.page);
   }
@@ -256,7 +277,7 @@ function unloadIslandAi() {
 }
 
 function switchPageByWheel(deltaY, deltaX = 0) {
-  const intent = window.mineworkUiModel?.islandPageIntent(currentPage, pageTransitionTimer ? currentPage : null, deltaY, deltaX, pageCount);
+  const intent = window.mineworkUiModel?.islandPageIntent(currentPage, pageTransitionTimer ? (pendingPageIntent || currentPage) : null, deltaY, deltaX, pageCount);
   if (!intent || intent.direction === "none") return;
   resetIdleFade();
   if (pageTransitionTimer) {
@@ -267,27 +288,34 @@ function switchPageByWheel(deltaY, deltaX = 0) {
   setExpanded(true);
 }
 
-function hideNotificationOverlay() {
+function notificationSourceLabel(source) {
+  return { mail: "邮件", performance: "性能", countdown: "倒计时", alarm: "闹钟", calendar: "日程", holiday: "节假日", anniversary: "纪念日", hydration: "喝水", system: "系统" }[source] || "";
+}
+
+function renderNotificationOverlay(active) {
   const overlay = document.getElementById("islandNotificationOverlay");
-  overlay.classList.remove("visible");
-  overlay.setAttribute("aria-hidden", "true");
-  activeNotification = null;
+  if (!active) {
+    overlay.classList.remove("visible");
+    overlay.setAttribute("aria-hidden", "true");
+    return;
+  }
+  document.getElementById("islandNotificationTitle").textContent = String(active.title || "MineWork 通知");
+  document.getElementById("islandNotificationBody").textContent = String(active.body || "");
+  const source = document.getElementById("islandNotificationSource");
+  const sourceLabel = notificationSourceLabel(active.source);
+  source.textContent = sourceLabel;
+  source.hidden = !sourceLabel;
+  document.getElementById("islandNotificationUnread").textContent = String(Math.max(0, Number(active.unreadCount) || 0));
+  const count = document.getElementById("islandNotificationCount");
+  const grouped = active.count > 1;
+  count.hidden = !grouped;
+  if (grouped) count.textContent = "×" + String(Math.min(99, active.count));
+  overlay.classList.add("visible");
+  overlay.setAttribute("aria-hidden", "false");
 }
 
 function showNotificationDelivery(delivery = {}) {
-  if (pageTransitionTimer) {
-    pendingNotificationDelivery = delivery;
-    return;
-  }
-  const record = delivery.record && typeof delivery.record === "object" ? delivery.record : null;
-  if (!record?.id) return;
-  activeNotification = record;
-  document.getElementById("islandNotificationTitle").textContent = String(record.title || "MineWork 通知");
-  document.getElementById("islandNotificationBody").textContent = String(record.body || "");
-  document.getElementById("islandNotificationUnread").textContent = String(Math.max(0, Number(delivery.unreadCount) || 0));
-  const overlay = document.getElementById("islandNotificationOverlay");
-  overlay.classList.add("visible");
-  overlay.setAttribute("aria-hidden", "false");
+  notificationController.enqueue(delivery);
 }
 
 function activateIslandAi(provider) {
@@ -417,18 +445,13 @@ pageDots.forEach((dot) => dot.addEventListener("click", (event) => {
   event.stopPropagation();
   const target = Number(dot.dataset.islandPage);
   const direction = target > currentPage ? "next" : target < currentPage ? "previous" : "none";
-  if (pageTransitionTimer) pendingPageIntent = target;
+  if (pageTransitionTimer) pendingPageIntent = { target, direction };
   else showPage(target, direction);
   resetIdleFade();
 }));
-document.querySelectorAll("[data-notification-action]").forEach((button) => button.addEventListener("click", async (event) => {
+document.querySelectorAll("[data-notification-action]").forEach((button) => button.addEventListener("click", (event) => {
   event.stopPropagation();
-  if (!activeNotification?.id) return;
-  const action = button.dataset.notificationAction;
-  if (action === "open") await api.notifications.open(activeNotification.id);
-  if (action === "dismiss") await api.notifications.dismiss(activeNotification.id);
-  if (action === "open") await api.notifications.markRead(activeNotification.id);
-  hideNotificationOverlay();
+  notificationController.handle(button.dataset.notificationAction).catch(() => {});
 }));
 document.querySelectorAll("[data-open-page]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); api.island.openMain(button.dataset.openPage); }));
 document.querySelectorAll("[data-island-ai]").forEach((button) => button.addEventListener("click", (event) => {

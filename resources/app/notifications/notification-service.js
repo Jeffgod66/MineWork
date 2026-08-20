@@ -193,7 +193,7 @@ function createNotificationService({ store, showWindows, publishMain, publishIsl
   function testNotification() {
     testSequence += 1;
     const occurrence = `${new Date(now()).toISOString()}-${testSequence}`;
-    return ingest({ source: "calendar", type: "test", entityId: `test-${occurrence}`, title: "MineWork 娴嬭瘯閫氱煡", body: "Notification channels are working.", scheduledAt: new Date(now()).toISOString(), targetPage: "notifications", dedupeKey: `test|${occurrence}` });
+    return ingest({ source: "calendar", type: "test", entityId: `test-${occurrence}`, title: "MineWork 测试通知", body: "通知渠道工作正常。", scheduledAt: new Date(now()).toISOString(), targetPage: "notifications", dedupeKey: `test|${occurrence}` });
   }
 
   function handleAction({ action, id } = {}) {

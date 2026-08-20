@@ -33,6 +33,10 @@ check(html.includes('id="page-notifications"'), "missing notifications page");
 check(html.includes('data-notification-filter="unread"') && html.includes('data-notification-filter="health"'), "missing notification filters");
 check(html.includes('id="notificationSettingsForm"') && html.includes('name="channels.windows"'), "missing notification settings form");
 check(html.includes('id="mailPrivacy"') && html.includes('name="mailPrivacy"'), "missing functional mail privacy setting");
+check(html.includes("通知总开关") && html.includes("免打扰") && html.includes("节假日提醒") && html.includes("更多提醒设置"), "notification settings are not Chinese-first");
+check(html.includes('data-go="calendar"') && html.includes('data-go="hydration"') && html.includes("纪念日提前提醒") && html.includes("喝水间隔与时段"), "notification page lacks anniversary and hydration entry points");
+check(app.includes("正在加载通知…") && app.includes('role="alert"'), "notification page lacks visible loading and error states");
+check(!/閫氱煡|Mark all read/.test(html), "notification page still contains garbled or English copy");
 check(html.includes('id="weatherLocationTabs"') && html.includes('id="refreshWeatherAll"'), "missing multi-location weather controls");
 check(html.includes('id="hydrationGoalForm"') && [1500, 2000, 2500, 3000].every((goal) => html.includes(`data-hydration-goal="${goal}"`)), "missing bounded hydration goal controls");
 check([150, 250, 350, 500].every((amount) => html.includes(`data-water="${amount}"`)) && html.includes('id="undoWater"') && html.includes('id="hydrationLog"'), "missing hydration quick add undo or log");
@@ -71,7 +75,9 @@ check(html.includes('src="./brand-wordmark.svg"') && splash.includes('src="./bra
 check(fs.existsSync(path.join(root, "renderer/brand-wordmark.svg")), "missing local brand wordmark asset");
 check(html.includes('id="noteImagePreview"') && app.includes("addNoteImages"), "missing pasted-image excerpt flow");
 check(html.includes('class="calendar-workspace"') && html.includes('id="focusEventComposer"'), "missing calendar agenda workspace");
-check(html.includes('id="anniversaryForm"') && html.includes('data-calendar-filter="holidays"') && html.includes('id="selectedDayFestivals"'), "missing lunar holiday anniversary calendar controls");
+["events", "tasks", "officialHolidays", "traditionalFestivals", "internationalDates", "anniversaries"].forEach((filter) => check(html.includes(`data-calendar-filter="${filter}"`), `missing calendar category filter ${filter}`));
+check(html.includes('id="anniversaryForm"') && html.includes('id="selectedDayFestivals"'), "missing lunar holiday anniversary calendar controls");
+check(app.includes("calendarSignalVisibility") && app.includes("categoryVisible"), "calendar renderer does not map category switches to badges and labels");
 check(main.includes('calendar:data:get') && main.includes('validateHolidaySnapshot') && app.includes('syncAnniversaries'), "missing validated calendar data and anniversary IPC integration");
 check(html.includes('class="performance-cockpit"') && html.includes("performance-hero"), "missing adaptive performance cockpit");
 [
@@ -88,6 +94,8 @@ check(islandHtml.includes("./ui-model.js"), "island is not using the shared UI m
 check(!islandHtml.includes('id="islandSignalRail"') && !islandHtml.includes("滚轮切换"), "obsolete island bottom information row remains");
 check((islandHtml.match(/<article class="island-slide/g) || []).length === 10, "island does not expose exactly ten pages");
 check(islandHtml.includes('id="islandNotificationOverlay"') && islandHtml.includes('id="islandNotificationUnread"'), "island notification overlay is missing");
+check(islandHtml.includes('id="islandNotificationSource"') && islandHtml.includes('id="islandNotificationCount"') && islandHtml.includes('data-notification-action="read"'), "island overlay lacks source, group count or mark-read action");
+check(islandHtml.includes("./island-notification-controller.js") && islandJs.includes("createIslandNotificationController") && islandJs.includes("islandAttentionPolicy"), "island does not use the notification queue controller and attention policy");
 check(islandJs.includes("islandPageIntent") && islandJs.includes("notifications.onDelivery"), "island lacks coalesced page intent or notification attention");
 check((islandJs.match(/pageTrack\.style\.transform\s*=/g) || []).length === 1 && !/offsetWidth|getBoundingClientRect/.test(islandJs), "island page motion has extra transform writers or forced layout");
 check(islandHtml.includes('id="islandLock"'), "missing island pass-through lock control");
@@ -96,6 +104,10 @@ check(islandCss.includes("CALM ISLAND AUTHORITATIVE LAYER") && islandCss.include
 check(islandJs.includes("ISLAND_PHASES"), "missing island phase state machine");
 check(!islandJs.includes("renderSignalRail") && islandJs.includes("renderNewPages"), "island page renderer does not match the ten-page design");
 check(main.includes("island:collapse-ready"), "missing island collapse handshake");
+check(main.includes('startupHolidayReminders = buildHolidayReminders(') && main.includes('writeWorkspaceValue("holiday-reminders", startupHolidayReminders)'), "startup does not rebuild holiday reminders from saved preferences");
+const preload = read("preload.js");
+const listenerProbe = /UserNotificationListener|NotificationListener|ListenForNotifications|Windows\.UI\.Notifications\.Management|ToastNotificationManagerCompat/.test(main) || /UserNotificationListener|NotificationListener|ListenForNotifications|Windows\.UI\.Notifications\.Management/.test(preload);
+check(!listenerProbe, "native system-notification capture listener is present despite the cancelled scope");
 check(uiModel.includes("workspaceSignalModel") && uiModel.includes("pageTransitionPlan") && uiModel.includes("islandMotionTiming"), "missing Polar Prism interaction models");
 check(!html.includes("startup-overlay"), "duplicate main-window startup overlay remains");
 check(splash.includes("PERSONAL WORKSPACE / 2026"), "startup did not restore the selected personal-workspace header");

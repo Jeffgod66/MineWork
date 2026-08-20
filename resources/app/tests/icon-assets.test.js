@@ -13,6 +13,16 @@ test('SVG is a restrained glacier ribbon mark with no text or circle primitives'
   assert.match(svg, /id=["'](?:ribbon|workflow-ribbon)["']/i);
 });
 
+test('small-frame variant is a restrained two-shape steel-ink mark', () => {
+  const small = fs.readFileSync(path.join(assetsDir, 'minework-small.svg'), 'utf8');
+  const shapes = small.match(/<(?:path|rect)\b/gi) || [];
+  assert.ok(shapes.length <= 5, `expected at most five path/rect shapes, got ${shapes.length}`);
+  assert.doesNotMatch(small, /<(?:text|circle)\b/i);
+  assert.doesNotMatch(small, /(?:#000(?:000)?|#050607|\bblack\b)/i);
+  assert.match(small, /id=["']workflow-ribbon["']/i);
+  assert.match(small, /stroke="#2E4A68"/);
+});
+
 test('SVG uses no black paint and contains no top capsule bar', () => {
   const svg = fs.readFileSync(path.join(assetsDir, 'minework.svg'), 'utf8');
   assert.doesNotMatch(svg, /(?:#000(?:000)?|#050607|\bblack\b)/i);

@@ -24,6 +24,12 @@ function Is-VendorPath {
     return $Path.StartsWith('resources/app/node_modules/', [System.StringComparison]::OrdinalIgnoreCase)
 }
 
+function Decode-ProhibitedFixture {
+    param([string] $Value)
+
+    return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($Value))
+}
+
 Push-Location -LiteralPath $resolvedRoot
 try {
     $tracked = @(git -C $resolvedRoot ls-files)
@@ -74,14 +80,14 @@ try {
     )
     $utf8 = [System.Text.UTF8Encoding]::new($false, $true)
     $identityPatterns = [ordered]@{
-        'Zhou Wan Qin' = 'identity string: Zhou Wan Qin'
-        '周琬芹' = 'identity string: 周琬芹'
-        '颜晟' = 'identity string: 颜晟'
-        'MineWork · 已登录本机' = 'logged-in default label: MineWork · 已登录本机'
-        'C:\Users\' = 'absolute Windows user path: C:\Users\'
-        'C:/Users/' = 'absolute Windows user path: C:/Users/'
-        'D:\MineWork' = 'absolute local path: D:\MineWork'
-        'D:/MineWork' = 'absolute local path: D:/MineWork'
+        (Decode-ProhibitedFixture 'WmhvdSBXYW4gUWlu') = 'identity string: encoded fixture 1'
+        (Decode-ProhibitedFixture '5ZGo55Cs6Iq5') = 'identity string: encoded fixture 2'
+        (Decode-ProhibitedFixture '6aKc5pmf') = 'identity string: encoded fixture 3'
+        (Decode-ProhibitedFixture 'TWluZVdvcmsgwrcg5bey55m75b2V5pys5py6') = 'logged-in default label: encoded fixture'
+        (Decode-ProhibitedFixture 'QzpcVXNlcnNc') = 'absolute Windows user path: encoded fixture'
+        (Decode-ProhibitedFixture 'QzovVXNlcnMv') = 'absolute Windows user path: encoded fixture'
+        (Decode-ProhibitedFixture 'RDpcTWluZVdvcms=') = 'absolute local path: encoded fixture'
+        (Decode-ProhibitedFixture 'RDovTWluZVdvcms=') = 'absolute local path: encoded fixture'
     }
     $emailPattern = '[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}'
     # This tracked test intentionally contains the identity fixtures it verifies;

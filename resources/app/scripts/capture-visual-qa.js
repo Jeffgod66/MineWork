@@ -55,43 +55,13 @@ async function main() {
   const outputDirectory = process.argv[3] || process.env.TEMP;
   const mode = process.argv[4] || "main";
   fs.mkdirSync(outputDirectory, { recursive: true });
-  const { call, socket } = await connect(port, mode === "main" ? "index.html" : "");
+  const { call, socket } = await connect(port, mode === "main" ? "index.html" : "island.html");
   console.log(`visual-qa connected ${port} ${mode}`);
   await call("Page.enable");
   await call("Runtime.enable");
   console.log("visual-qa domains enabled");
 
   if (mode === "island") {
-    await call("Page.addScriptToEvaluateOnNewDocument", { source: `
-      window.minework = {
-        storage: { snapshot: {}, set() {} },
-        island: {
-          setState() {}, collapseReady() {}, openMain() {}, setVisible() {}, setInteraction() {}, async setLocked() {}, requestWorkspace() {},
-          onSettingsChanged(callback) { setTimeout(() => callback({ locked: false }), 20); },
-          onWorkspace(callback) { setTimeout(() => callback({
-            username: '用户', quote: '真正重要的进步，往往安静得没有掌声。',
-            tasks: [{ text: '完成视觉验收', done: true }, { text: '整理今日计划', done: false }, { text: '留出专注时间', done: false }],
-            taskProgress: { done: 1, total: 3 },
-            weather: { city: '厦门', temperature: 28, description: '晴间多云', code: 1, high: 31, low: 25 },
-            hydration: { amount: 1250, goal: 2000 },
-            countdown: { name: '秋季计划', target: new Date(Date.now() + 3 * 86400000).toISOString() },
-            events: [{ title: '晨间同步', date: new Date().setHours(9, 30, 0, 0) }, { title: '项目回顾', date: new Date().setHours(14, 30, 0, 0) }],
-            bookCount: 6, shortcutCount: 8
-          }), 80); }
-        },
-        media: {
-          async status() { return { isAvailable: true, playbackStatus: 'playing', title: 'Night Drive', artist: 'MineWork Radio' }; },
-          async control() {}
-        },
-        system: {
-          islandWebviewPreload: '',
-          async performance() { return { cpu: { usage: 18 }, memory: { usage: 42 }, disk: { usage: 61 } }; }
-        },
-        webSessions: { async flush() {} },
-        async translate() { return { ok: true, translated: '保持专注，也保持轻盈。' }; }
-      };
-    ` });
-    await call("Page.navigate", { url: "file:///D:/MineWork/resources/app/renderer/island.html" });
     await delay(900);
     let shot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false, fromSurface: true });
     fs.writeFileSync(path.join(outputDirectory, "minework-polar-prism-island-collapsed.png"), Buffer.from(shot.data, "base64"));
@@ -105,6 +75,24 @@ async function main() {
       fs.writeFileSync(target, Buffer.from(shot.data, "base64"));
       console.log(target);
     }
+    for (const width of [420, 590, 760]) {
+      await call("Runtime.evaluate", { expression: `window.resizeTo(${width}, 300)`, returnByValue: true });
+      await delay(600);
+      shot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false, fromSurface: true });
+      const target = path.join(outputDirectory, `minework-polar-prism-island-${width}px.png`);
+      fs.writeFileSync(target, Buffer.from(shot.data, "base64"));
+      console.log(target);
+    }
+    await call("Runtime.evaluate", { expression: "window.resizeTo(590, 300)", returnByValue: true });
+    await delay(400);
+    await call("Runtime.evaluate", { expression: `showNotificationDelivery({ record: { id: 'qa-1', source: 'mail', type: 'new-mail', title: '新邮件', body: '设计评审会议改到周四上午' }, unreadCount: 3 }); showNotificationDelivery({ record: { id: 'qa-2', source: 'mail', type: 'new-mail', title: '新邮件', body: '周五发布窗口确认' }, unreadCount: 4 })`, returnByValue: true });
+    await delay(500);
+    shot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false, fromSurface: true });
+    fs.writeFileSync(path.join(outputDirectory, "minework-polar-prism-island-notification-overlay.png"), Buffer.from(shot.data, "base64"));
+    await call("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+    await delay(200);
+    shot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false, fromSurface: true });
+    fs.writeFileSync(path.join(outputDirectory, "minework-polar-prism-island-reduced-motion.png"), Buffer.from(shot.data, "base64"));
     call("Browser.close").catch(() => {});
     await delay(120);
     socket.close();
@@ -137,7 +125,7 @@ async function main() {
   `, returnByValue: true });
   console.log("visual-qa fixtures rendered");
 
-  const auditPages = ["home", "tasks", "calendar", "weather", "news", "favorites", "notes", "library", "hydration", "reflection", "island", "shortcuts", "countdown", "translate", "performance", "music"];
+  const auditPages = ["home", "tasks", "calendar", "weather", "news", "favorites", "notes", "library", "hydration", "reflection", "island", "shortcuts", "countdown", "translate", "performance", "music", "mail", "notifications"];
   for (const pageName of auditPages) {
     console.log(`responsive-audit start ${pageName}`);
     await call("Runtime.evaluate", { expression: `setPage('${pageName}')`, returnByValue: true });
@@ -187,7 +175,7 @@ async function main() {
     console.log(`responsive-audit ${pageName} ${JSON.stringify(metrics)}`);
   }
 
-  for (const pageName of ["calendar", "favorites", "notes", "library", "news", "performance"]) {
+  for (const pageName of ["calendar", "favorites", "notes", "library", "news", "performance", "notifications"]) {
     await call("Runtime.evaluate", { expression: `setPage('${pageName}')`, returnByValue: true });
     const activeState = await call("Runtime.evaluate", { expression: `({ count: document.querySelectorAll('.page.active').length, target: document.getElementById('page-${pageName}').classList.contains('active') })`, returnByValue: true });
     if (activeState.result.value.count !== 1 || !activeState.result.value.target) throw new Error(`page ${pageName} entered an empty transition state`);

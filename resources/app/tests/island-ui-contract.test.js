@@ -56,6 +56,7 @@ test("notification attention is an overlay, not an eleventh page, and exposes re
   assert.match(html, /id="islandNotificationOverlay"/);
   assert.match(html, /id="islandNotificationUnread"/);
   assert.match(html, /id="islandNotificationSource"/);
+  assert.match(html, /id="islandNotificationCount"/);
   assert.match(html, /data-notification-action="read"/);
   assert.match(html, /data-notification-action="open"/);
   assert.match(html, /data-notification-action="dismiss"/);
@@ -63,6 +64,28 @@ test("notification attention is an overlay, not an eleventh page, and exposes re
   assert.match(js, /notifications\.markRead/);
   assert.match(js, /notifications\.dismiss/);
   assert.doesNotMatch(js, /islandNotification[\s\S]{0,160}pageTrack\.style\.transform/);
+});
+
+test("notification deliveries run through the queue controller with grouping and a bounded timeout", () => {
+  assert.match(html, /island-notification-controller\.js/);
+  assert.match(js, /createIslandNotificationController/);
+  assert.match(js, /showNotificationDelivery\(delivery[^)]*\)\s*\{[^}]*notificationController\.enqueue\(delivery\)/s);
+  assert.match(js, /notificationController\.setBlocked\(true\)/);
+  assert.match(js, /notificationController\.setBlocked\(false\)/);
+  assert.match(js, /notificationController\.handle\(/);
+  assert.match(js, /timeoutMs:\s*8000/);
+  assert.doesNotMatch(js, /pendingNotificationDelivery/);
+  assert.doesNotMatch(js, /activeNotification/);
+});
+
+test("a coalesced page switch retains its stored direction and attention restores idle click-through", () => {
+  assert.match(js, /pendingPageIntent = intent\.pending/);
+  assert.match(js, /showPage\(intent\.target \?\? intent, intent\.direction \?\? "none"\)/);
+  assert.match(js, /pendingPageIntent = \{ target, direction \}/);
+  assert.match(js, /islandAttentionPolicy/);
+  assert.match(js, /applyNotificationAttention/);
+  assert.match(js, /!notificationAttention/);
+  assert.match(js, /policy\.interaction === "idle"/);
 });
 
 test("idle pass-through uses eight seconds and native interaction IPC", () => {

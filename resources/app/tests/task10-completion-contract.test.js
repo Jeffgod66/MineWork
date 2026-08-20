@@ -83,3 +83,40 @@ test("main authorizes generic workspace writes and exposes the full settings con
   for (const name of ["masterEnabled", "performanceRules.diskFreeBytesThresholdGb", "performanceRules.cooldownMinutes", "holidayReminder.enabled", "holidayReminder.chinaOfficial", "holidayReminder.chinaTraditional", "holidayReminder.international"]) assert.match(html, new RegExp(`name=["']${name.replace(".", "\\.")}["']`));
   assert.match(main, /notifications:settings:reset/);
 });
+
+test("windows pass the authoritative data file path to preload with a legacy fallback", () => {
+  const main = fs.readFileSync(path.join(__dirname, "..", "main.js"), "utf8");
+  const preload = fs.readFileSync(path.join(__dirname, "..", "preload.js"), "utf8");
+  assert.equal((main.match(/additionalArguments: \[`--minework-data-file=/g) || []).length, 2);
+  assert.match(preload, /startsWith\("--minework-data-file="\)/);
+  assert.match(preload, /path\.join\(process\.env\.APPDATA \|\| "", "MineWork", "minework-data\.json"\)/);
+});
+
+test("startup rebuilds holiday reminders from persisted preferences and reset keeps defaults", () => {
+  const main = fs.readFileSync(path.join(__dirname, "..", "main.js"), "utf8");
+  assert.match(main, /whenReady\(\)\.then\(\(\) => \{[\s\S]*?startupHolidayReminders = buildHolidayReminders\(/);
+  assert.match(main, /writeWorkspaceValue\("holiday-reminders", startupHolidayReminders\);[\s\S]*?notificationScheduler\.start\(\)/);
+  assert.doesNotMatch(main, /writeWorkspaceValue\("holiday-reminders", \[\]\)/);
+});
+
+test("calendar cells hide rest/work badges and mismatched labels with their category switch", () => {
+  const app = fs.readFileSync(path.join(__dirname, "..", "renderer", "app.js"), "utf8");
+  assert.match(app, /categoryVisible\s*=\s*\{[^}]*"china-official":\s*visibility\.officialHoliday[^}]*"china-traditional":\s*visibility\.traditionalFestival[^}]*"international":\s*visibility\.internationalDate/);
+  assert.match(app, /visibleFestivals = cell\.meta\.festivals\.filter\(\(_name, index\) => \{/);
+  assert.match(app, /category === "china-commemoration"\) return cell\.meta\.workStatus \? visibility\.officialHoliday : visibility\.traditionalFestival/);
+  assert.match(app, /visibility\.officialHoliday && cell\.meta\.workStatus === "rest"[\s\S]{0,120}work-badge rest/);
+  assert.match(app, /visibility\.anniversary && anniversaryTitle \? anniversaryTitle/);
+});
+
+test("notification page is Chinese-first with visible loading, error and cross-entry states", () => {
+  const html = fs.readFileSync(path.join(__dirname, "..", "renderer", "index.html"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "..", "renderer", "app.js"), "utf8");
+  assert.doesNotMatch(html, /閫氱煡|Mark all read|No notifications in this view/);
+  for (const text of ["通知总开关", "免打扰", "通知来源", "节假日提醒", "更多提醒设置", "纪念日提前提醒", "喝水间隔与时段"]) assert.ok(html.includes(text), `missing notification page text: ${text}`);
+  assert.match(html, /data-go="calendar"[^>]*>纪念日提前提醒/);
+  assert.match(html, /data-go="hydration"[^>]*>喝水间隔与时段/);
+  assert.match(app, /正在加载通知…/);
+  assert.match(app, /role="alert"/);
+  assert.match(app, /当前筛选下没有通知。/);
+  assert.match(app, /status\.textContent = "已保存"/);
+});

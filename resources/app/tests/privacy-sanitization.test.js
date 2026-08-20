@@ -17,12 +17,8 @@ const releaseFiles = [
 ];
 
 test("release-facing files contain no embedded identity or logged-in defaults", () => {
-  const prohibited = [
-    "Zhou Wan Qin",
-    "周琬芹",
-    "颜晟",
-    "MineWork · 已登录本机"
-  ];
+  const prohibited = ["WmhvdSBXYW4gUWlu", "5ZGo55Cs6Iq5", "6aKc5pmf", "TWluZVdvcmsgwrcg5bey55m75b2V5pys5py6"]
+    .map((fixture) => Buffer.from(fixture, "base64").toString("utf8"));
 
   for (const filePath of releaseFiles) {
     const content = fs.readFileSync(filePath, "utf8");

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">MineWork small</title>
+  <desc id="desc">A bold steel-ink M used for small Windows icon frames so the fold stays legible</desc>
+  <defs>
+    <linearGradient id="glacier" x1="38" y1="27" x2="222" y2="231" gradientUnits="userSpaceOnUse"><stop stop-color="#F4FBFF"/><stop offset=".5" stop-color="#B7D9F1"/><stop offset="1" stop-color="#79A8CF"/></linearGradient>
+  </defs>
+  <path d="M72 18h112c30 0 54 24 54 54v112c0 30-24 54-54 54H72c-30 0-54-24-54-54V72c0-30 24-54 54-54Z" fill="url(#glacier)"/>
+  <path id="workflow-ribbon" d="M48 196V104c0-14 11-25 25-25 8 0 15 4 20 10l35 46 35-50c5-7 12-11 20-11 14 0 25 11 25 25v97" fill="none" stroke="#2E4A68" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

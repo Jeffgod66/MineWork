@@ -14,6 +14,8 @@ const sharp = loadSharp();
 
 const assetsDir = path.join(__dirname, '..', 'assets');
 const sourcePath = path.join(assetsDir, 'minework.svg');
+const smallSourcePath = path.join(assetsDir, 'minework-small.svg');
+const smallFrameCeiling = 24;
 const outputArg = process.argv.indexOf('--output-dir');
 const outputDir = outputArg >= 0 && process.argv[outputArg + 1] ? path.resolve(process.argv[outputArg + 1]) : assetsDir;
 const pngPath = path.join(outputDir, 'minework.png');
@@ -57,9 +59,10 @@ function buildIco(frames) {
 
 async function main() {
   const svg = await fs.readFile(sourcePath);
+  const smallSvg = await fs.readFile(smallSourcePath);
   await fs.mkdir(outputDir, { recursive: true });
   const frames = await Promise.all(
-    sizes.map(async (size) => ({ size, png: await renderPng(svg, size) }))
+    sizes.map(async (size) => ({ size, png: await renderPng(size <= smallFrameCeiling ? smallSvg : svg, size) }))
   );
 
   const sourcePng = frames.find(({ size }) => size === 256).png;

@@ -7,10 +7,15 @@ const { pathToFileURL } = require("url");
 const { createClonedSubscription } = require("./notifications/notification-runtime");
 const { sanitizeMailStatus } = require("./mail-integration");
 
+function workspaceDataPath() {
+  const argument = process.argv.find((item) => item.startsWith("--minework-data-file="));
+  if (argument) return argument.slice("--minework-data-file=".length);
+  return path.join(process.env.APPDATA || "", "MineWork", "minework-data.json");
+}
+
 function readWorkspaceSnapshot() {
   try {
-    const dataPath = path.join(process.env.APPDATA || "", "MineWork", "minework-data.json");
-    const stored = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+    const stored = JSON.parse(fs.readFileSync(workspaceDataPath(), "utf8"));
     return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
   } catch {
     return {};

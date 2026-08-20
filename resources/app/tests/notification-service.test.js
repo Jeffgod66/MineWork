@@ -100,7 +100,7 @@ test("test notification uses the documented source, target, title and a unique o
   assert.equal(first.record.source, "calendar");
   assert.equal(first.record.type, "test");
   assert.equal(first.record.targetPage, "notifications");
-  assert.equal(first.record.title, "MineWork 娴嬭瘯閫氱煡");
+  assert.equal(first.record.title, "MineWork 测试通知");
   assert.notEqual(first.record.dedupeKey, second.record.dedupeKey);
   assert.equal(ctx.outcomes.island.length, 2);
 });
