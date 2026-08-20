@@ -92,8 +92,8 @@
             <button class="nav-item" data-page="mail" data-title="邮箱">
               <span class="nav-icon"><svg><use href="./icon-sprite.svg#envelope"/></svg></span><span>邮箱</span>
             </button>
-            <button class="nav-item" data-page="notifications" data-title="閫氱煡">
-              <span class="nav-icon"><svg><use href="./icon-sprite.svg#bell"/></svg></span><span>閫氱煡</span>
+            <button class="nav-item" data-page="notifications" data-title="通知">
+              <span class="nav-icon"><svg><use href="./icon-sprite.svg#bell"/></svg></span><span>通知</span>
             </button>
           </div>
           <button class="sidebar-status account-entry" id="accountEntry">
@@ -508,35 +508,35 @@
 
           <section class="page" id="page-notifications">
             <div class="page-head notification-head">
-              <div><h1>閫氱煡 <span class="notification-count" id="notificationUnreadCount">0</span></h1><p>MineWork alerts and reminder history.</p></div>
-              <div class="head-actions"><button class="secondary-button" id="notificationTest">Test</button><button class="secondary-button" id="notificationMarkAll">Mark all read</button><button class="secondary-button" id="notificationClear">Clear</button></div>
+              <div><h1>通知 <span class="notification-count" id="notificationUnreadCount">0</span></h1><p>MineWork 的通知与提醒历史。</p></div>
+              <div class="head-actions"><button class="secondary-button" id="notificationTest">发送测试通知</button><button class="secondary-button" id="notificationMarkAll">全部已读</button><button class="secondary-button" id="notificationClear">清空</button></div>
             </div>
             <div class="notification-layout">
               <section class="notification-history" aria-label="Notification history">
                 <div class="notification-filters" role="group" aria-label="Notification filters">
-                  <button class="active" data-notification-filter="all">All</button><button data-notification-filter="unread">Unread</button><button data-notification-filter="mail">Mail</button><button data-notification-filter="schedule">Schedule</button><button data-notification-filter="performance">Performance</button><button data-notification-filter="health">Health</button>
+                  <button class="active" data-notification-filter="all">全部</button><button data-notification-filter="unread">未读</button><button data-notification-filter="mail">邮件</button><button data-notification-filter="schedule">日程</button><button data-notification-filter="performance">性能</button><button data-notification-filter="health">健康</button>
                 </div>
                 <div id="notificationList" class="notification-list" aria-live="polite"></div>
-                <button class="secondary-button hidden" id="notificationLoadMore">Load more</button>
+                <button class="secondary-button hidden" id="notificationLoadMore">加载更多</button>
               </section>
               <aside class="notification-settings panel">
                 <form id="notificationSettingsForm">
-                  <div class="settings-heading"><h2>Delivery</h2><span id="notificationSaveState" role="status"></span></div>
-                  <label class="notification-setting"><span>Notifications</span><input name="masterEnabled" type="checkbox" checked /></label>
-                  <label class="notification-setting"><span>Mail privacy</span><input id="mailPrivacy" name="mailPrivacy" type="checkbox" /></label>
-                  <fieldset><legend>Channels</legend>
-                    <label><input name="channels.windows" type="checkbox" /> Windows</label><label><input name="channels.island" type="checkbox" /> Island</label><label><input name="channels.sound" type="checkbox" /> Sound</label>
+                  <div class="settings-heading"><h2>投递方式</h2><span id="notificationSaveState" role="status"></span></div>
+                  <label class="notification-setting"><span>通知总开关</span><input name="masterEnabled" type="checkbox" checked /></label>
+                  <label class="notification-setting"><span>邮箱隐私模式（仅显示数量）</span><input id="mailPrivacy" name="mailPrivacy" type="checkbox" /></label>
+                  <fieldset><legend>通知渠道</legend>
+                    <label><input name="channels.windows" type="checkbox" /> Windows 桌面通知</label><label><input name="channels.island" type="checkbox" /> 灵动岛</label><label><input name="channels.sound" type="checkbox" /> 声音</label>
                   </fieldset>
-                  <fieldset><legend>Do not disturb</legend>
-                    <label><input name="quietHours.enabled" type="checkbox" /> Enabled</label><label>Start <input name="quietHours.start" type="time" /></label><label>End <input name="quietHours.end" type="time" /></label>
+                  <fieldset><legend>免打扰</legend>
+                    <label><input name="quietHours.enabled" type="checkbox" /> 启用</label><label>开始 <input name="quietHours.start" type="time" /></label><label>结束 <input name="quietHours.end" type="time" /></label>
                   </fieldset>
-                  <fieldset class="notification-sources"><legend>Sources</legend>
-                    <label><input name="sources.mail" type="checkbox" /> Mail</label><label><input name="sources.performance" type="checkbox" /> Performance</label><label><input name="sources.countdown" type="checkbox" /> Countdown</label><label><input name="sources.alarm" type="checkbox" /> Alarm</label><label><input name="sources.calendar" type="checkbox" /> Calendar</label><label><input name="sources.anniversary" type="checkbox" /> Anniversary</label><label><input name="sources.holiday" type="checkbox" /> Holiday</label><label><input name="sources.hydration" type="checkbox" /> Hydration</label>
+                  <fieldset class="notification-sources"><legend>通知来源</legend>
+                    <label><input name="sources.mail" type="checkbox" /> 邮件</label><label><input name="sources.performance" type="checkbox" /> 性能</label><label><input name="sources.countdown" type="checkbox" /> 倒计时</label><label><input name="sources.alarm" type="checkbox" /> 闹钟</label><label><input name="sources.calendar" type="checkbox" /> 日程</label><label><input name="sources.anniversary" type="checkbox" /> 纪念日</label><label><input name="sources.holiday" type="checkbox" /> 节假日</label><label><input name="sources.hydration" type="checkbox" /> 喝水</label>
                   </fieldset>
-                  <fieldset><legend>Performance alerts</legend><label>CPU % <input name="performanceRules.cpuThreshold" type="number" min="1" max="100" /></label><label>Memory % <input name="performanceRules.memoryThreshold" type="number" min="1" max="100" /></label><label>Disk free % <input name="performanceRules.diskFreePercentThreshold" type="number" min="0" max="100" /></label><label>Disk free GB <input name="performanceRules.diskFreeBytesThresholdGb" type="number" min="0" max="100000" /></label><label>Sustain seconds <input name="performanceRules.sustainSeconds" type="number" min="1" max="3600" /></label><label>Cooldown minutes <input name="performanceRules.cooldownMinutes" type="number" min="1" max="1440" /></label></fieldset>
-                  <fieldset><legend>Holiday reminders</legend><label><input name="holidayReminder.enabled" type="checkbox" /> Enabled</label><label>Time <input name="holidayReminder.time" type="time" /></label><label>Days before <select name="holidayReminder.daysBefore"><option value="0">当天</option><option value="1">1 天</option><option value="3">3 天</option><option value="7">7 天</option></select></label><label><input name="holidayReminder.chinaOfficial" type="checkbox" /> 中国法定节假日</label><label><input name="holidayReminder.chinaTraditional" type="checkbox" /> 中国传统节日</label><label><input name="holidayReminder.international" type="checkbox" /> 国际重要节日</label></fieldset>
-                  <fieldset><legend>More reminder settings</legend><button class="secondary-button" type="button" data-go="calendar">纪念日提前提醒</button><button class="secondary-button" type="button" data-go="hydration">喝水间隔与时段</button></fieldset>
-                  <div class="settings-actions"><button class="primary-button" type="submit">Save</button><button class="secondary-button" type="button" id="notificationReset">Reset</button><button class="secondary-button" type="button" id="notificationSettingsTest">Test</button></div>
+                  <fieldset><legend>性能提醒</legend><label>CPU % <input name="performanceRules.cpuThreshold" type="number" min="1" max="100" /></label><label>内存 % <input name="performanceRules.memoryThreshold" type="number" min="1" max="100" /></label><label>磁盘剩余 % <input name="performanceRules.diskFreePercentThreshold" type="number" min="0" max="100" /></label><label>磁盘剩余 GB <input name="performanceRules.diskFreeBytesThresholdGb" type="number" min="0" max="100000" /></label><label>持续秒数 <input name="performanceRules.sustainSeconds" type="number" min="1" max="3600" /></label><label>冷却分钟 <input name="performanceRules.cooldownMinutes" type="number" min="1" max="1440" /></label></fieldset>
+                  <fieldset><legend>节假日提醒</legend><label><input name="holidayReminder.enabled" type="checkbox" /> 启用</label><label>时间 <input name="holidayReminder.time" type="time" /></label><label>提前天数 <select name="holidayReminder.daysBefore"><option value="0">当天</option><option value="1">1 天</option><option value="3">3 天</option><option value="7">7 天</option></select></label><label><input name="holidayReminder.chinaOfficial" type="checkbox" /> 中国法定节假日</label><label><input name="holidayReminder.chinaTraditional" type="checkbox" /> 中国传统节日</label><label><input name="holidayReminder.international" type="checkbox" /> 国际重要节日</label></fieldset>
+                  <fieldset><legend>更多提醒设置</legend><button class="secondary-button" type="button" data-go="calendar">纪念日提前提醒</button><button class="secondary-button" type="button" data-go="hydration">喝水间隔与时段</button></fieldset>
+                  <div class="settings-actions"><button class="primary-button" type="submit">保存</button><button class="secondary-button" type="button" id="notificationReset">恢复默认</button><button class="secondary-button" type="button" id="notificationSettingsTest">测试</button></div>
                 </form>
               </aside>
             </div>
@@ -549,7 +549,7 @@
           <button type="button" class="modal-close" id="closeAccountModal" aria-label="关闭"><svg><use href="./icon-sprite.svg#x"/></svg></button>
           <h2>你好，欢迎回来</h2><p>无需密码。输入用户名，就能把这台工作台变成你的空间。</p>
           <label>用户名<input id="usernameInput" maxlength="32" placeholder="你的名字" required /></label>
-          <label class="resident-option"><input id="stayResident" type="checkbox" checked /><span></span><div><b>关闭后驻留后台</b><small>点击关闭按钮时隐藏到托盘，提醒和灵动岛继续工作</small></div></label>
+          <label class="resident-option"><input id="stayResident" type="checkbox" /><span></span><div><b>关闭后驻留后台</b><small>点击关闭按钮时隐藏到托盘，提醒和灵动岛继续工作</small></div></label>
           <button class="primary-button account-submit">进入 MineWork</button>
         </form>
       </div>

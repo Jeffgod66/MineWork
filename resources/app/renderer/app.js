@@ -1,7 +1,7 @@
 "use strict";
 
 const api = window.minework;
-const DEFAULT_USERNAME = "用户";
+const DEFAULT_USERNAME = "";
 const persistedStore = window.mineworkUiModel?.cloneMutableSnapshot(api?.storage?.snapshot) || {};
 const store = {
   get(key, fallback) {
@@ -42,8 +42,8 @@ const state = {
   activeNewsCategory: "general",
   newsReadIds: store.get("newsReadIds", []),
   newsQuery: store.get("newsQuery", ""),
-  username: DEFAULT_USERNAME,
-  stayResident: true,
+  username: "",
+  stayResident: false,
   calendarCursor: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   selectedDate: "",
   media: null,
@@ -258,11 +258,11 @@ function notificationFilter() {
 
 function relativeNotificationTime(value) {
   const delta = Date.now() - Date.parse(value);
-  if (!Number.isFinite(delta) || delta < 0) return "just now";
-  if (delta < 60000) return "just now";
-  if (delta < 3600000) return `${Math.floor(delta / 60000)}m ago`;
-  if (delta < 86400000) return `${Math.floor(delta / 3600000)}h ago`;
-  return `${Math.floor(delta / 86400000)}d ago`;
+  if (!Number.isFinite(delta) || delta < 0) return "刚刚";
+  if (delta < 60000) return "刚刚";
+  if (delta < 3600000) return `${Math.floor(delta / 60000)} 分钟前`;
+  if (delta < 86400000) return `${Math.floor(delta / 3600000)} 小时前`;
+  return `${Math.floor(delta / 86400000)} 天前`;
 }
 
 function notificationIcon(source) {
@@ -277,8 +277,8 @@ function renderNotifications(snapshot = notificationState.snapshot) {
     <article class="notification-card" data-status="${escapeHtml(record.status)}">
       <span class="notification-source-icon"><svg><use href="./icon-sprite.svg#${notificationIcon(record.source)}"/></svg></span>
       <div><h3>${escapeHtml(record.title)}</h3><p>${escapeHtml(record.body)}</p><div class="notification-meta"><span class="notification-severity">${escapeHtml(record.severity)}</span><time title="${escapeHtml(new Date(record.createdAt).toLocaleString())}" datetime="${escapeHtml(record.createdAt)}">${relativeNotificationTime(record.createdAt)}</time></div></div>
-      <div class="notification-actions">${record.status === "unread" ? `<button data-notification-action="read" data-notification-id="${escapeHtml(record.id)}">Read</button>` : ""}<button data-notification-action="open" data-notification-id="${escapeHtml(record.id)}">Open</button><button data-notification-action="dismiss" data-notification-id="${escapeHtml(record.id)}">Dismiss</button></div>
-    </article>`).join("") : '<div class="notification-empty">No notifications in this view.</div>';
+      <div class="notification-actions">${record.status === "unread" ? `<button data-notification-action="read" data-notification-id="${escapeHtml(record.id)}">已读</button>` : ""}<button data-notification-action="open" data-notification-id="${escapeHtml(record.id)}">打开</button><button data-notification-action="dismiss" data-notification-id="${escapeHtml(record.id)}">忽略</button></div>
+    </article>`).join("") : '<div class="notification-empty">当前筛选下没有通知。</div>';
   $("#notificationLoadMore").classList.toggle("hidden", (notificationState.snapshot.records || []).length <= notificationState.limit);
 }
 
@@ -331,7 +331,7 @@ async function initializeNotifications() {
       if (notificationState.filter === "all") renderNotifications(snapshot);
       else refreshNotifications();
     });
-  } catch (error) { toast(error.message || "Could not initialize notifications"); }
+  } catch (error) { toast(error.message || "通知初始化失败"); }
 }
 
 function updateClock() {
@@ -804,16 +804,17 @@ function renderDailyQuote() {
 }
 
 function renderAccount() {
-  const name = state.username || "朋友";
-  $("#accountName").textContent = name;
-  $("#accountHint").textContent = "MineWork · 已登录本机";
-  $("#accountAvatar").textContent = name.slice(0, 1).toUpperCase();
-  $("#greetingName").textContent = name;
+  const name = state.username.trim();
+  const displayName = name || "未登录";
+  $("#accountName").textContent = displayName;
+  $("#accountHint").textContent = name ? "MineWork · 已登录" : "MineWork · 未登录";
+  $("#accountAvatar").textContent = displayName.slice(0, 1).toUpperCase();
+  $("#greetingName").textContent = displayName;
   const brandOwner = $("#brandOwner");
-  if (brandOwner) brandOwner.textContent = name.toUpperCase();
+  if (brandOwner) brandOwner.textContent = displayName.toUpperCase();
   $("#usernameInput").value = name;
   $("#stayResident").checked = state.stayResident;
-  document.title = `MineWork · ${name}`;
+  document.title = name ? `MineWork · ${name}` : "MineWork";
 }
 
 async function initializeAccount() {
@@ -1113,8 +1114,14 @@ function renderCalendar() {
     const isWeekend = day.getDay() === 0 || day.getDay() === 6;
     const visibility = window.mineworkUiModel?.calendarSignalVisibility(state.calendarFilters, { eventCount: meta.eventCount, taskCount: meta.openTaskCount, officialHoliday: cell.holidaySignals?.officialHoliday, traditionalFestival: cell.holidaySignals?.traditionalFestival, internationalDate: cell.holidaySignals?.internationalDate, anniversary: cell.signals.anniversary }) || {};
     const badge = visibility.officialHoliday && cell.meta.workStatus === "rest" ? `<b class="work-badge rest">休</b>` : visibility.officialHoliday && cell.meta.workStatus === "work" ? `<b class="work-badge work">班</b>` : "";
-    const visibleFestivals = cell.meta.festivals.filter((_name, index) => cell.meta.festivalCategories[index] === "international" ? visibility.internationalDate : visibility.traditionalFestival);
-    const specialLabel = visibility.anniversary ? cell.meta.label : visibleFestivals[0] || (visibility.officialHoliday ? cell.meta.label : "");
+    const categoryVisible = { "china-official": visibility.officialHoliday, "china-traditional": visibility.traditionalFestival, "international": visibility.internationalDate };
+    const visibleFestivals = cell.meta.festivals.filter((_name, index) => {
+      const category = cell.meta.festivalCategories[index];
+      if (category === "china-commemoration") return cell.meta.workStatus ? visibility.officialHoliday : visibility.traditionalFestival;
+      return categoryVisible[category] === true;
+    });
+    const anniversaryTitle = cell.signals.anniversary ? cell.meta.label : "";
+    const specialLabel = visibility.anniversary && anniversaryTitle ? anniversaryTitle : visibleFestivals[0] || (visibility.traditionalFestival && cell.meta.solarTerm ? cell.meta.solarTerm : "");
     const fullLabel = [...cell.meta.festivals, cell.meta.solarTerm, cell.meta.lunarMonth + cell.meta.lunarDay].filter(Boolean).join(" · ");
     return `<button class="calendar-day ${isOutsideMonth ? "muted" : ""} ${isWeekend ? "weekend" : ""} ${key === today ? "today" : ""} ${key === state.selectedDate ? "selected" : ""}" data-calendar-date="${key}" title="${escapeHtml(fullLabel)}" aria-label="${key} ${escapeHtml(fullLabel)}">
       <span class="calendar-day-top">${isOutsideMonth || day.getDate() === 1 ? `<small>${day.getMonth() + 1}月</small>` : "<small></small>"}<strong>${day.getDate()}</strong></span>
@@ -1330,8 +1337,8 @@ function bindEvents() {
   $("#notificationSettingsForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const status = $("#notificationSaveState");
-    try { writeNotificationForm(await api.notifications.updateSettings(notificationSettingsPatch())); status.textContent = "Saved"; }
-    catch (error) { status.textContent = error.message || "Save failed"; }
+    try { writeNotificationForm(await api.notifications.updateSettings(notificationSettingsPatch())); status.textContent = "已保存"; }
+    catch (error) { status.textContent = error.message || "保存失败"; }
   });
 
   $("#accountEntry").addEventListener("click", () => {

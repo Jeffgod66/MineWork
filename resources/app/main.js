@@ -51,9 +51,9 @@ const ISLAND_LAYOUTS = {
   ai: { width: 760, windowHeight: 620, shellHeight: 610, radius: 29 },
   translate: { width: 660, windowHeight: 430, shellHeight: 420, radius: 29 }
 };
-const DEFAULT_USERNAME = "用户";
-const LEGACY_USERNAME = "\u7528\u6237";
-const APP_DEFAULTS = { stayResident: true, username: DEFAULT_USERNAME };
+const DEFAULT_USERNAME = "";
+const LEGACY_USERNAME = "用户";
+const APP_DEFAULTS = { stayResident: false, username: "" };
 const networkCache = new Map();
 let workspaceDataCache = null;
 const activeNotifications = new Set();
@@ -383,6 +383,7 @@ function createIslandWindow() {
     icon: path.join(ASSET_ROOT, "minework.ico"),
     webPreferences: {
       preload: path.join(APP_ROOT, "preload.js"),
+      additionalArguments: [`--minework-data-file=${workspaceDataPath()}`],
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
@@ -418,6 +419,7 @@ function createMainWindow() {
     icon: path.join(ASSET_ROOT, "minework.ico"),
     webPreferences: {
       preload: path.join(APP_ROOT, "preload.js"),
+      additionalArguments: [`--minework-data-file=${workspaceDataPath()}`],
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
@@ -630,6 +632,8 @@ app.whenReady().then(() => {
   sendToMain("island:shortcut-status", islandShortcutAvailable);
   islandWindow?.webContents.send("island:shortcut-status", islandShortcutAvailable);
   refreshTrayMenu();
+  const startupHolidayReminders = buildHolidayReminders({ china: BUNDLED_CALENDAR_DATA.china, international: BUNDLED_CALENDAR_DATA.international, year: BUNDLED_CALENDAR_DATA.china.year, settings: notificationService.settings().holidayReminder });
+  writeWorkspaceValue("holiday-reminders", startupHolidayReminders);
   notificationScheduler.start().catch(() => {});
   performanceMonitor.start().catch(() => {});
   powerMonitor.on("resume", notificationScheduler.onResume);
@@ -725,7 +729,8 @@ ipcMain.handle("notifications:settings:update", (event, patch) => {
 ipcMain.handle("notifications:settings:reset", (event) => {
   requireNotificationManager(event);
   const settings = notificationService.resetSettings();
-  writeWorkspaceValue("holiday-reminders", []);
+  const reminders = buildHolidayReminders({ china: BUNDLED_CALENDAR_DATA.china, international: BUNDLED_CALENDAR_DATA.international, year: BUNDLED_CALENDAR_DATA.china.year, settings: settings.holidayReminder });
+  writeWorkspaceValue("holiday-reminders", reminders);
   performanceMonitor.updateSettings(settings.performanceRules || {});
   notificationScheduler.reload().catch(() => {});
   return settings;

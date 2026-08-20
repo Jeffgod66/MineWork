@@ -2,7 +2,7 @@
   "name": "minework",
   "productName": "MineWork",
   "version": "2.3.0",
-  "description": "个人桌面工作台。",
+  "description": "注重隐私的本地桌面工作台。",
   "main": "main.js",
   "license": "GPL-3.0"
 }
