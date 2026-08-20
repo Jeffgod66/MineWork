@@ -84,10 +84,15 @@ try {
         'D:/MineWork' = 'absolute local path: D:/MineWork'
     }
     $emailPattern = '[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}'
+    # This tracked test intentionally contains the identity fixtures it verifies;
+    # Task 3 will replace those visible fixtures with non-real-name values.
+    $contentScanExclusions = @('resources/app/tests/privacy-sanitization.test.js')
 
     foreach ($path in $tracked) {
         $normalizedPath = $path.Replace('\', '/')
-        if ($normalizedPath.Equals($scriptRelativePath, [System.StringComparison]::OrdinalIgnoreCase) -or (Is-VendorPath $normalizedPath)) {
+        if ($normalizedPath.Equals($scriptRelativePath, [System.StringComparison]::OrdinalIgnoreCase) -or
+            ($contentScanExclusions -contains $normalizedPath) -or
+            (Is-VendorPath $normalizedPath)) {
             continue
         }
 

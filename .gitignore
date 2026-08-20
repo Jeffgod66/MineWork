@@ -23,3 +23,8 @@ out/
 *.pak
 *.dat
 *.bin
+**/*.db
+**/*.sqlite
+**/*.ldb
+**/*.local
+**/*.tmp
